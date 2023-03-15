@@ -1,5 +1,4 @@
 ## PSCMarkov
-## salut dan
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -27,6 +26,22 @@ def simul(N, M, D, R, T0, scen):
     mem_e = []
 
     dT = 0
+    
+    
+    
+    def type_ofjump(par_d,par_n,par_m):
+        param = par_d + par_n + par_m
+        
+        pass
+        
+    
+    def one_jump(u,v,mem_e,mem_u,mem_v,evol):
+        pass
+
+    def 
+    
+    
+    
 
     for i in tqdm(range(1,N)):
 
@@ -43,7 +58,7 @@ def simul(N, M, D, R, T0, scen):
             seg_vm = V*(R[1][1]*U + R[1][2]*V)
 
             ## Paramètre de chaque action possible
-            par_d = seg_ud.sum() + seg_vd.sum()
+            par_d = seg_ud.sum() + seg_vd.sum() # 
             par_n = seg_un.sum() + seg_vn.sum()
             par_m = seg_um.sum() + seg_vm.sum()
             param = par_d + par_n + par_m
@@ -83,11 +98,16 @@ def simul(N, M, D, R, T0, scen):
                 V[p] += -1
 
         evol.append((e, k, p))
-
+        
 
         ## On rajoute la partie naissance mort
   
     return evol, T
+
+
+
+
+
 
 
 #----------------------------------------------------------------------------------------------------------------------------------------------------------------------
