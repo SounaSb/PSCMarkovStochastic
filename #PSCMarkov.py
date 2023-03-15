@@ -309,7 +309,7 @@ def xlin():
 
 
 # On calcul
-evol,T = simul(N,M,D,T0,intru)
+evol,T = simul(N,M,D,R,T0,intru)
 
 # On anime
 Animate(evol, intru, T, vitesse = 2000/M, suivi=0, moy=False)
