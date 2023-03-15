@@ -176,13 +176,27 @@ def Animate(evol,scenario,T,vitesse,suivi,moy,filename=''):
     for i in tqdm(range(N)):
         
         # Construction de nos populations
-        de, k, dp = evol[i]
-        if de==0:
-            Utemp[k] += 1
-            Utemp[dp] += -1
-        elif de == 1:
-            Vtemp[k] += 1
-            Vtemp[dp] += -1
+        e, k, p, jump_type = evol[i]
+        if jump_type == 0:
+            if e==0:
+                Utemp[k] += 1
+                Utemp[p] += -1
+            elif e == 1:
+                Vtemp[k] += 1
+                Vtemp[p] += -1
+        if jump_type == 1:
+            if e==0:
+                Utemp[p] += 1
+            elif e == 1:
+                Vtemp[p] += 1
+        if jump_type == 2:
+           if e==0:
+            if Utemp[p]>0:
+                Utemp[p] += -1
+           elif e == 1:
+            if Vtemp[p]>0:
+                Vtemp[p] += -1
+          
 
         # Suivi position
         if suivi == evol[i][0]:
