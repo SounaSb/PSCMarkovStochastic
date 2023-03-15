@@ -68,8 +68,7 @@ def simul(N, M, D, R, T0, scen):
             ### type d'évolution
             
             
-            mem_t=np.random.choice([0,1,2],
-                                [par_d/param,par_n/param,par_m/param],2000)    
+            mem_t=np.random.choice([0,1,2],[par_d/param,par_n/param,par_m/param],2000)    
 
             ### Qui saute
             
