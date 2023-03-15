@@ -14,6 +14,7 @@ def simul(N, M, D, R, T0, scen):
     U = U0.copy()
     V = V0.copy()
     T[0] = T0
+    dT = 0
     
     exp = np.random.exponential(1,N)
     bin = np.random.binomial(1, 0.5, N)
@@ -21,30 +22,28 @@ def simul(N, M, D, R, T0, scen):
     
     # Optimisation
     evol = [(2,0,0)]
-    mem_u = []
-    mem_v = []
-    mem_e = []
-
-    dT = 0
+    mem_ud, mem_vd, mem_ed = [], [], []
+    mem_un, mem_vn, mem_en = [], [], []
+    mem_um, mem_vm, mem_em = [], [], []
     
-    
-    
-    def type_of_evol(par_d,par_n,par_m):
-        total_weight = par_d + par_n + par_m
-        return np.random.choice([0,1,2],
-                                [par_d/total_weight,par_n/total_weight,par_m/total_weight])
+    def type_ofjump(par_d,par_n,par_m):
+        param = par_d + par_n + par_m
+        
+        pass
         
     
     def one_jump(u,v,mem_e,mem_u,mem_v,evol):
-        evol_type=type_of_evol
+        pass
+
+    def 
     
     
     
 
     for i in tqdm(range(1,N)):
 
-        if len(mem_u) == 0 or len(mem_v) == 0 or len(mem_e) == 0: # on réactualise si une des listes mémoires est vide
-            ### Paramètres de poids de chaque slot en fonction des population et du role (croisé, diff)
+        if len(mem_u) == 0 or len(mem_v) == 0 or len(mem_e) == 0:
+    ### Paramètres de poids de chaque slot en fonction des population et du role (croisé, diff)
             ## Diffusion
             seg_ud = U*(D[0][0] + D[0][1]*U + D[0][2]*V) 
             seg_vd = V*(D[1][0] + D[1][1]*U + D[1][2]*V)
@@ -56,21 +55,30 @@ def simul(N, M, D, R, T0, scen):
             seg_vm = V*(R[1][1]*U + R[1][2]*V)
 
             ## Paramètre de chaque action possible
-            par_d = seg_ud.sum() + seg_vd.sum()
+            par_d = seg_ud.sum() + seg_vd.sum() # 
             par_n = seg_un.sum() + seg_vn.sum()
             par_m = seg_um.sum() + seg_vm.sum()
-            param = par_d + par_n + par_m # somme de tous les poids : diffusion, naissance, mort et pour les 2 populations
+            param = par_d + par_n + par_m
             
-           
-            dT = exp[i]/param # intervalle de temps jusqu'au prochain saut
-            T[i] = T[i-1]+dT # temps du saut i
+            dT = exp[i]/param
+            T[i] = T[i-1]+dT
 
-            ### Qui saute
+    ### Qui saute
             ## Diffusion
             qd = seg_vd.sum() / par_d
             mem_ed = np.random.binomial(1, qd, size=2000)
             mem_ud = np.random.choice(range(len(seg_ud)), p=seg_ud/seg_ud.sum(), size=int((1-qd)*2000)) 
-            mem_vd = np.random.choice(range(len(seg_vd)), p=seg_vd/seg_vd.sum(), size=int(qd*2000)) 
+            mem_vd = np.random.choice(range(len(seg_vd)), p=seg_vd/seg_vd.sum(), size=int(qd*2000))
+            ## Naissance
+            qd = seg_vn.sum() / par_n
+            mem_en = np.random.binomial(1, qn, size=2000)
+            mem_un = np.random.choice(range(len(seg_un)), p=seg_un/seg_un.sum(), size=len(mem_en)-mem_en.sum()) 
+            mem_vn = np.random.choice(range(len(seg_vn)), p=seg_vn/seg_vn.sum(), size=mem_en.sum())
+            ## Mort
+            qd = seg_vm.sum() / par_m
+            mem_em = np.random.binomial(1, qd, size=2000)
+            mem_um = np.random.choice(range(len(seg_um)), p=seg_um/seg_um.sum(), size=len(mem_em)-mem_em.sum()) 
+            mem_vm = np.random.choice(range(len(seg_vm)), p=seg_vm/seg_vm.sum(), size=mem_em.sum()) 
 
         
     ### Actualisation
@@ -97,9 +105,6 @@ def simul(N, M, D, R, T0, scen):
                 V[p] += -1
 
         evol.append((e, k, p))
-        
-
-        ## On rajoute la partie naissance mort
   
     return evol, T
 
