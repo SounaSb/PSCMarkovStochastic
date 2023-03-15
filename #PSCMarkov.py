@@ -67,11 +67,12 @@ def simul(N, M, D, R, T0, scen):
 
             ### Qui saute
             ## Diffusion
-            q = lambda_v / param
-            mem_e = np.random.binomial(1, q, size=2000)
-            mem_u = np.random.choice(range(len(seg_u)), p=seg_u/lambda_u, size=int((1-q)*2000)) 
-            mem_v = np.random.choice(range(len(seg_v)), p=seg_v/lambda_v, size=int(q*2000)) 
+            qd = seg_vd.sum() / par_d
+            mem_ed = np.random.binomial(1, qd, size=2000)
+            mem_ud = np.random.choice(range(len(seg_ud)), p=seg_ud/seg_ud.sum(), size=int((1-qd)*2000)) 
+            mem_vd = np.random.choice(range(len(seg_vd)), p=seg_vd/seg_vd.sum(), size=int(qd*2000)) 
 
+        
     ### Actualisation
         ## Diffusion 
         e, mem_e = mem_e[-1], mem_e[: -1]
