@@ -60,7 +60,8 @@ def simul(N, M, D, R, T0, scen):
             
             
             ### type d'évolution
-            mem_t=np.random.choice([0,1,2], [par_d/param,par_n/param,par_m/param],2000)    
+            mem_t=np.random.choice(np.array([0,1,2]), 
+                                   p=np.array([par_d/param,par_n/param,par_m/param]),size=2000)    
 
             ### Qui saute 
             qd = seg_vd.sum() / par_d     # probabilité que ce soit v qui diffuse plutôt que u
@@ -69,20 +70,23 @@ def simul(N, M, D, R, T0, scen):
             mem_ed = np.random.binomial(1, qd, size=2000)           # bernoulli de paramètre qd pour choisir qui va effectuverment diffuser
             mem_en = np.random.binomial(1, qn, size=2000)           # bernoulli de paramètre qd pour choisir qui va effectuverment naitre
             mem_em = np.random.binomial(1, qm, size=2000)           # bernoulli de paramètre qd pour choisir qui va effectuverment mourir
+            if (seg_ud.sum() < e-6) :
+                break
+            print(seg_un.sum())
+            print(seg_um.sum())
+            mem_ud = np.random.choice(np.arange(len(seg_ud)), p=seg_ud/seg_ud.sum(), size=len(mem_ed)-mem_ed.sum())       
+            mem_vd = np.random.choice(np.arange(len(seg_vd)), p=seg_vd/seg_vd.sum(), size=mem_ed.sum()) 
             
-            mem_ud = np.random.choice(range(len(seg_ud)), p=seg_ud/seg_ud.sum(), size=len(mem_ed)-mem_ed.sum())       
-            mem_vd = np.random.choice(range(len(seg_vd)), p=seg_vd/seg_vd.sum(), size=mem_ed.sum()) 
-            
-            mem_un = np.random.choice(range(len(seg_un)), p=seg_un/seg_un.sum(), size=len(mem_en)-mem_en.sum())       
-            mem_vn = np.random.choice(range(len(seg_vn)), p=seg_vn/seg_vn.sum(), size=mem_en.sum()) 
+            mem_un = np.random.choice(np.arange(len(seg_un)), p=seg_un/seg_un.sum(), size=len(mem_en)-mem_en.sum())       
+            mem_vn = np.random.choice(np.arange(len(seg_vn)), p=seg_vn/seg_vn.sum(), size=mem_en.sum()) 
         
-            mem_um = np.random.choice(range(len(seg_um)), p=seg_um/seg_um.sum(), size=len(mem_em)-mem_em.sum())       
-            mem_vm = np.random.choice(range(len(seg_vm)), p=seg_vm/seg_vm.sum(), size=mem_em.sum()) 
+            mem_um = np.random.choice(np.arange(len(seg_um)), p=seg_um/seg_um.sum(), size=len(mem_em)-mem_em.sum())       
+            mem_vm = np.random.choice(np.arange(len(seg_vm)), p=seg_vm/seg_vm.sum(), size=mem_em.sum()) 
 
         
         ### Actualisation
 
-        if mem_t[i] == 0:
+        if mem_t[-1] == 0:
             jumptype=0
             ## Determination du site de départ de diffusion et maj
             ed, mem_ed = mem_ed[-1], mem_ed[: -1] # e détermine l'espèce qui va diffuser , et mem_e est actualisé sans cette valeur 
@@ -107,7 +111,7 @@ def simul(N, M, D, R, T0, scen):
 
             evol.append((ed, kd, pd,jumptype))
             
-        elif (mem_t[i]==1):
+        elif (mem_t[-1]==1):
             jumptype=1
             ## determination du site de naissance et maj
             en, mem_en = mem_en[-1], mem_en[: -1]
@@ -124,7 +128,7 @@ def simul(N, M, D, R, T0, scen):
                 V[pn] += 1
             evol.append((en, kn, pn,jumptype))
         
-        elif (mem_t[i]==2):
+        elif (mem_t[-1]==2):
             jumptype=2
             ## determination du site de mort et de l'espèce et maj
             em, mem_em = mem_em[-1], mem_em[: -1]
@@ -142,6 +146,7 @@ def simul(N, M, D, R, T0, scen):
                 if V[pm]> 0 :
                     V[pm] += -1 
             evol.append((em, km, pm,jumptype))
+        mem_t= mem_t[:-1]
   
     return evol, T
 
@@ -272,7 +277,7 @@ def Animate(evol,scenario,T,vitesse,suivi,moy,filename=''):
 
 ## On exécute maintenant
 D = [[1, 1, 1] , [1, 1, 1]]
-R = [[1, 2, 1] , [0, 3, 1]]
+R = [[1, 2, 1] , [1, 3, 1]]
 M = 100
 
 N = 1000000
