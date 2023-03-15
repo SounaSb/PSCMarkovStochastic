@@ -14,6 +14,7 @@ def simul(N, M, D, R, T0, scen):
     U = U0.copy()
     V = V0.copy()
     T[0] = T0
+    dT = 0
     
     exp = np.random.exponential(1,N)
     bin = np.random.binomial(1, 0.5, N) # évolution à droite ou à gauche
@@ -21,13 +22,11 @@ def simul(N, M, D, R, T0, scen):
     
     # Optimisation
     evol = [(2,0,0)]
-    mem_u = []
-    mem_v = []
-    mem_e = []
+    mem_ud, mem_vd, mem_ed = [], [], []
+    mem_un, mem_vn, mem_en = [], [], []
+    mem_um, mem_vm, mem_em = [], [], []
 
-    dT = 0
-    
-    
+   
     
     def type_of_evol(par_d,par_n,par_m):
         total_weight = par_d + par_n + par_m
