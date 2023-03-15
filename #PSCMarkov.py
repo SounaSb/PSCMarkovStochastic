@@ -273,11 +273,13 @@ def Animate(evol,scenario,T,vitesse,suivi,moy,filename=''):
 
 
 ## On exécute maintenant
-D = [[1, 1, 1] , [1, 1, 1]]
-R = [[10, 1, 1] , [10, 1, 1]]
-M = 100
+D = [[10, 1, 2] , 
+     [1, 5, 1]]
+R = [[10, 1e-3, 1e-3] , 
+     [10, 1e-3, 1e-3]]
+M = 1000
 
-N = 1000000
+N = 10000000
 T0 = 0
 absc = np.linspace(start = 0, stop = 1, num = M)
 
