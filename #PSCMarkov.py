@@ -14,31 +14,18 @@ def simul(N, M, D, R, T0, scen):
     U = U0.copy()
     V = V0.copy()
     T[0] = T0
-    dT = 0
     
     exp = np.random.exponential(1,N)
     bin = np.random.binomial(1, 0.5, N) # évolution à droite ou à gauche
     plage = np.random.randint(1, 1+ M//40, N)
     
     # Optimisation
-    evol = [(2,0,0)]
-    mem_ud, mem_vd, mem_ed = [], [], []
-    mem_un, mem_vn, mem_en = [], [], []
-    mem_um, mem_vm, mem_em = [], [], []
+    evol = [(2,0,0,3)]
+    mem_u = []
+    mem_v = []
+    mem_e = []
 
-   
-    
-    def type_of_evol(par_d,par_n,par_m):
-        total_weight = par_d + par_n + par_m
-        return np.random.choice([0,1,2],
-                                [par_d/total_weight,par_n/total_weight,par_m/total_weight])
-        
-    
-    def one_jump(u,v,mem_e,mem_u,mem_v,evol):
-        evol_type=type_of_evol
-    
-    
-    
+    dT = 0  
 
     for i in tqdm(range(1,N)):
 
@@ -68,7 +55,8 @@ def simul(N, M, D, R, T0, scen):
             ### type d'évolution
             
             
-            mem_t=np.random.choice([0,1,2],[par_d/param,par_n/param,par_m/param],2000)    
+            mem_t=np.random.choice([0,1,2],
+                                [par_d/param,par_n/param,par_m/param],2000)    
 
             ### Qui saute
             
@@ -93,32 +81,63 @@ def simul(N, M, D, R, T0, scen):
     ### Actualisation
 
         if mem_t[i] == 0:
-            ## Diffusion 
-            e, mem_e = mem_e[-1], mem_e[: -1] # e détermine l'espèce qui va diffuser , et mem_e est actualisé sans cette valeur 
-            if e == 0: # donc c'est u qui va sauter
-                p, mem_u = mem_u[-1], mem_u[: -1] # p détermine le site de u qui va sauter, mem_u est actualisé sans sa dernière valeur qui a été utilisée pour le saut 
+            jumptype=0
+            ## Determination du site de départ de diffusion et maj
+            ed, mem_ed = mem_ed[-1], mem_ed[: -1] # e détermine l'espèce qui va diffuser , et mem_e est actualisé sans cette valeur 
+            if ed == 0: # donc c'est u qui va sauter
+                pd, mem_ud = mem_ud[-1], mem_ud[: -1] # p détermine le site de u qui va sauter, mem_u est actualisé sans sa dernière valeur qui a été utilisée pour le saut 
             else: # donc c'est v qui va sauter
-                p, mem_v = mem_v[-1], mem_v[: -1]  # p détermine quel site de v va sauter, mem_v est actualisé sans sa dernière valeur qui a été utilisée pour le saut 
+                pd, mem_vd = mem_vd[-1], mem_vd[: -1]  # p détermine quel site de v va sauter, mem_v est actualisé sans sa dernière valeur qui a été utilisée pour le saut 
 
             
             ### Plus qu'à actualiser les positions avec le saut determiné
             dir = bin[i]  # choisit la direction gauche ou droite (+1 ou -1 pour le moment)
-            k = int((p+plage[i]*(1-2*dir))%M) #site d'arrivée
+            kd = int((pd+plage[i]*(1-2*dir))%M) #site d'arrivée
             
             ## Diffusion
-            if e == 0:
-                if U[p]> 0 :
-                    U[k] += 1
-                    U[p] += -1
+            if ed == 0:
+                if U[pd]> 0 :
+                    U[kd] += 1
+                    U[pd] += -1
             else:
-                if V[p] > 0:
-                    V[k] += 1
-                    V[p] += -1
+                if V[pd] > 0:
+                    V[kd] += 1
+                    V[pd] += -1
 
-            evol.append((e, k, p))
+            evol.append((ed, kd, pd,jumptype))
+        elif (mem_t[i]==1):
+            jumptype=1
+            ## determination du site de naissance et maj
+            en, mem_en = mem_en[-1], mem_en[: -1]
+            if en == 0: # donc c'est u qui va croitre
+                pn, mem_un = mem_un[-1], mem_un[: -1] # p détermine le site de u qui va croitre, mem_u est actualisé sans sa dernière valeur qui a été utilisée pour la naissance 
+            else: # donc c'est v qui va croitre
+                pn, mem_vn = mem_vn[-1], mem_vn[: -1]  # p détermine quel site de v va croitre, mem_v est actualisé sans sa dernière valeur qui a été utilisée pour la naissance 
+            
+            kn=pn
+            ## Naissance
+            if en == 0:
+                U[pn] += 1
+            else:
+                V[pn] += 1
+            evol.append((en, kn, pn,jumptype))
         
-
-        ## On rajoute la partie naissance mort
+        elif (mem_t[i]==2):
+            jumptype=1
+            ## determination du site de naissance et maj
+            en, mem_en = mem_en[-1], mem_en[: -1]
+            if en == 0: # donc c'est u qui va croitre
+                pn, mem_un = mem_un[-1], mem_un[: -1] # p détermine le site de u qui va croitre, mem_u est actualisé sans sa dernière valeur qui a été utilisée pour la naissance 
+            else: # donc c'est v qui va croitre
+                pn, mem_vn = mem_vn[-1], mem_vn[: -1]  # p détermine quel site de v va croitre, mem_v est actualisé sans sa dernière valeur qui a été utilisée pour la naissance 
+            
+            kn=pn
+            ## Naissance
+            if en == 0:
+                U[pn] += 1
+            else:
+                V[pn] += 1
+            evol.append((en, kn, pn,jumptype))
   
     return evol, T
 
