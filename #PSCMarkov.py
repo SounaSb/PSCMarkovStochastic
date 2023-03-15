@@ -16,7 +16,7 @@ def simul(N, M, D, R, T0, scen):
     T[0] = T0
     
     exp = np.random.exponential(1,N)
-    bin = np.random.binomial(1, 0.5, N)
+    bin = np.random.binomial(1, 0.5, N) # évolution à droite ou à gauche
     plage = np.random.randint(1, 1+ M//40, N)
     
     # Optimisation
@@ -67,24 +67,35 @@ def simul(N, M, D, R, T0, scen):
 
             ### Qui saute
             ## Diffusion
-            qd = seg_vd.sum() / par_d
-            mem_ed = np.random.binomial(1, qd, size=2000)
-            mem_ud = np.random.choice(range(len(seg_ud)), p=seg_ud/seg_ud.sum(), size=int((1-qd)*2000)) 
-            mem_vd = np.random.choice(range(len(seg_vd)), p=seg_vd/seg_vd.sum(), size=int(qd*2000)) 
+            qd = seg_vd.sum() / par_d     # probabilité que ce soit v qui diffuse plutôt que u
+            qn = seg_vn.sum() / par_n     # probabilité que ce soit v qui diffuse plutôt que u
+            qm = seg_vm.sum() / par_m     # probabilité que ce soit v qui diffuse plutôt que u
+            mem_ed = np.random.binomial(1, qd, size=2000)           # bernoulli de paramètre qd pour choisir qui va effectuverment diffuser
+            mem_en = np.random.binomial(1, qn, size=2000)
+            mem_em = np.random.binomial(1, qm, size=2000)
+            
+            mem_ud = np.random.choice(range(len(seg_ud)), p=seg_ud/seg_ud.sum(), size=len(mem_ed)-mem_ed.sum())       
+            mem_vd = np.random.choice(range(len(seg_vd)), p=seg_vd/seg_vd.sum(), size=mem_ed.sum()) 
+            
+            mem_un = np.random.choice(range(len(seg_un)), p=seg_un/seg_un.sum(), size=len(mem_en)-mem_en.sum())       
+            mem_vn = np.random.choice(range(len(seg_vn)), p=seg_vn/seg_vn.sum(), size=mem_en.sum()) 
+        
+            mem_um = np.random.choice(range(len(seg_um)), p=seg_um/seg_um.sum(), size=len(mem_em)-mem_em.sum())       
+            mem_vm = np.random.choice(range(len(seg_vm)), p=seg_vm/seg_vm.sum(), size=mem_em.sum()) 
 
         
     ### Actualisation
         ## Diffusion 
-        e, mem_e = mem_e[-1], mem_e[: -1]
-        if e == 0:
-            p, mem_u = mem_u[-1], mem_u[: -1]
-        else:
-            p, mem_v = mem_v[-1], mem_v[: -1]
+        e, mem_e = mem_e[-1], mem_e[: -1] # e détermine l'espèce qui va diffuser , et mem_e est actualisé sans cette valeur 
+        if e == 0: # donc c'est u qui va sauter
+            p, mem_u = mem_u[-1], mem_u[: -1] # p détermine le site de u qui va sauter, mem_u est actualisé sans sa dernière valeur qui a été utilisée pour le saut 
+        else: # donc c'est v qui va sauter
+            p, mem_v = mem_v[-1], mem_v[: -1]  # p détermine quel site de v va sauter, mem_v est actualisé sans sa dernière valeur qui a été utilisée pour le saut 
 
           
     ### Plus qu'à actualiser les positions avec le saut determiné
-        dir = bin[i]
-        k = int((p+plage[i]*(1-2*dir))%M)
+        dir = bin[i]  # choisit la direction gauche ou droite (+1 ou -1 pour le moment)
+        k = int((p+plage[i]*(1-2*dir))%M) #site d'arrivée
         
         ## Diffusion
         if e == 0:
