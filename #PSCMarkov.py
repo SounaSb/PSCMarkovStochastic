@@ -68,11 +68,11 @@ def simul(N, M, D, R, T0, scen):
             ### Qui saute
             ## Diffusion
             qd = seg_vd.sum() / par_d     # probabilité que ce soit v qui diffuse plutôt que u
-            qn = seg_vn.sum() / par_n     # probabilité que ce soit v qui diffuse plutôt que u
-            qm = seg_vm.sum() / par_m     # probabilité que ce soit v qui diffuse plutôt que u
+            qn = seg_vn.sum() / par_n     # probabilité que ce soit v qui naisse plutôt que u
+            qm = seg_vm.sum() / par_m     # probabilité que ce soit v qui meurt plutôt que u
             mem_ed = np.random.binomial(1, qd, size=2000)           # bernoulli de paramètre qd pour choisir qui va effectuverment diffuser
-            mem_en = np.random.binomial(1, qn, size=2000)
-            mem_em = np.random.binomial(1, qm, size=2000)
+            mem_en = np.random.binomial(1, qn, size=2000)           # bernoulli de paramètre qd pour choisir qui va effectuverment naitre
+            mem_em = np.random.binomial(1, qm, size=2000)           # bernoulli de paramètre qd pour choisir qui va effectuverment mourir
             
             mem_ud = np.random.choice(range(len(seg_ud)), p=seg_ud/seg_ud.sum(), size=len(mem_ed)-mem_ed.sum())       
             mem_vd = np.random.choice(range(len(seg_vd)), p=seg_vd/seg_vd.sum(), size=mem_ed.sum()) 
