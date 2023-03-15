@@ -70,10 +70,7 @@ def simul(N, M, D, R, T0, scen):
             mem_ed = np.random.binomial(1, qd, size=2000)           # bernoulli de paramètre qd pour choisir qui va effectuverment diffuser
             mem_en = np.random.binomial(1, qn, size=2000)           # bernoulli de paramètre qd pour choisir qui va effectuverment naitre
             mem_em = np.random.binomial(1, qm, size=2000)           # bernoulli de paramètre qd pour choisir qui va effectuverment mourir
-            if (seg_ud.sum() < e-6) :
-                break
-            print(seg_un.sum())
-            print(seg_um.sum())
+            
             mem_ud = np.random.choice(np.arange(len(seg_ud)), p=seg_ud/seg_ud.sum(), size=len(mem_ed)-mem_ed.sum())       
             mem_vd = np.random.choice(np.arange(len(seg_vd)), p=seg_vd/seg_vd.sum(), size=mem_ed.sum()) 
             
@@ -277,7 +274,7 @@ def Animate(evol,scenario,T,vitesse,suivi,moy,filename=''):
 
 ## On exécute maintenant
 D = [[1, 1, 1] , [1, 1, 1]]
-R = [[1, 2, 1] , [1, 3, 1]]
+R = [[10, 1, 1] , [10, 1, 1]]
 M = 100
 
 N = 1000000
