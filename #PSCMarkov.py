@@ -21,9 +21,16 @@ def simul(N, M, D, R, T0, scen):
     
     # Optimisation
     evol = [(2,0,0,3)]
-    mem_u = []
-    mem_v = []
-    mem_e = []
+    mem_ud = []
+    mem_vd = []
+    mem_ed = []
+    mem_un = []
+    mem_vn = []
+    mem_en = []
+    mem_um = []
+    mem_vm = []
+    mem_em = []
+    mem_t = []
 
     dT = 0  
 
@@ -265,7 +272,7 @@ def Animate(evol,scenario,T,vitesse,suivi,moy,filename=''):
 
 ## On exécute maintenant
 D = [[1, 1, 1] , [1, 1, 1]]
-R = [[0, 0, 0] , [0, 0, 0]]
+R = [[1, 2, 1] , [0, 3, 1]]
 M = 100
 
 N = 1000000
