@@ -53,14 +53,9 @@ def simul(N, M, D, R, T0, scen):
             
             
             ### type d'évolution
-            
-            
-            mem_t=np.random.choice([0,1,2],
-                                [par_d/param,par_n/param,par_m/param],2000)    
+            mem_t=np.random.choice([0,1,2], [par_d/param,par_n/param,par_m/param],2000)    
 
-            ### Qui saute
-            
-            
+            ### Qui saute 
             qd = seg_vd.sum() / par_d     # probabilité que ce soit v qui diffuse plutôt que u
             qn = seg_vn.sum() / par_n     # probabilité que ce soit v qui naisse plutôt que u
             qm = seg_vm.sum() / par_m     # probabilité que ce soit v qui meurt plutôt que u
