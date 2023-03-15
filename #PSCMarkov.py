@@ -78,7 +78,7 @@ def simul(N, M, D, R, T0, scen):
             mem_vm = np.random.choice(range(len(seg_vm)), p=seg_vm/seg_vm.sum(), size=mem_em.sum()) 
 
         
-    ### Actualisation
+        ### Actualisation
 
         if mem_t[i] == 0:
             jumptype=0
@@ -123,21 +123,23 @@ def simul(N, M, D, R, T0, scen):
             evol.append((en, kn, pn,jumptype))
         
         elif (mem_t[i]==2):
-            jumptype=1
-            ## determination du site de naissance et maj
-            en, mem_en = mem_en[-1], mem_en[: -1]
-            if en == 0: # donc c'est u qui va croitre
-                pn, mem_un = mem_un[-1], mem_un[: -1] # p détermine le site de u qui va croitre, mem_u est actualisé sans sa dernière valeur qui a été utilisée pour la naissance 
-            else: # donc c'est v qui va croitre
-                pn, mem_vn = mem_vn[-1], mem_vn[: -1]  # p détermine quel site de v va croitre, mem_v est actualisé sans sa dernière valeur qui a été utilisée pour la naissance 
+            jumptype=2
+            ## determination du site de mort et de l'espèce et maj
+            em, mem_em = mem_em[-1], mem_em[: -1]
+            if em == 0: # donc c'est u qui va mourir
+                pm, mem_um = mem_um[-1], mem_um[: -1] # p détermine le site de u qui va mourir, mem_u est actualisé sans sa dernière valeur qui a été utilisée pour la mort 
+            else: # donc c'est v qui va mourir
+                pm, mem_vm = mem_vm[-1], mem_vm[: -1]  # p détermine quel site de v va mourir, mem_v est actualisé sans sa dernière valeur qui a été utilisée pour la mort 
             
-            kn=pn
-            ## Naissance
-            if en == 0:
-                U[pn] += 1
+            km=pm
+            ## mort
+            if em == 0:
+                if U[pm]> 0 :
+                    U[pm] += -1
             else:
-                V[pn] += 1
-            evol.append((en, kn, pn,jumptype))
+                if V[pm]> 0 :
+                    V[pm] += -1 
+            evol.append((em, km, pm,jumptype))
   
     return evol, T
 
