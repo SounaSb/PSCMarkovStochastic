@@ -43,7 +43,7 @@ def simul(N, M, D, R, T0, scen):
 
     for i in tqdm(range(1,N)):
 
-        if len(mem_u) == 0 or len(mem_v) == 0 or len(mem_e) == 0: # on réactualise si une des listes mémoires est vide
+        if len(mem_t) == 0: # on réactualise si une des listes mémoires est vide
             ### Paramètres de poids de chaque slot en fonction des population et du role (croisé, diff)
             ## Diffusion
             seg_ud = U*(D[0][0] + D[0][1]*U + D[0][2]*V) 
@@ -64,9 +64,17 @@ def simul(N, M, D, R, T0, scen):
            
             dT = exp[i]/param # intervalle de temps jusqu'au prochain saut
             T[i] = T[i-1]+dT # temps du saut i
+            
+            
+            ### type d'évolution
+            
+            
+            mem_t=np.random.choice([0,1,2],
+                                [par_d/param,par_n/param,par_m/param],2000)    
 
             ### Qui saute
-            ## Diffusion
+            
+            
             qd = seg_vd.sum() / par_d     # probabilité que ce soit v qui diffuse plutôt que u
             qn = seg_vn.sum() / par_n     # probabilité que ce soit v qui naisse plutôt que u
             qm = seg_vm.sum() / par_m     # probabilité que ce soit v qui meurt plutôt que u
@@ -85,29 +93,31 @@ def simul(N, M, D, R, T0, scen):
 
         
     ### Actualisation
-        ## Diffusion 
-        e, mem_e = mem_e[-1], mem_e[: -1] # e détermine l'espèce qui va diffuser , et mem_e est actualisé sans cette valeur 
-        if e == 0: # donc c'est u qui va sauter
-            p, mem_u = mem_u[-1], mem_u[: -1] # p détermine le site de u qui va sauter, mem_u est actualisé sans sa dernière valeur qui a été utilisée pour le saut 
-        else: # donc c'est v qui va sauter
-            p, mem_v = mem_v[-1], mem_v[: -1]  # p détermine quel site de v va sauter, mem_v est actualisé sans sa dernière valeur qui a été utilisée pour le saut 
 
-          
-    ### Plus qu'à actualiser les positions avec le saut determiné
-        dir = bin[i]  # choisit la direction gauche ou droite (+1 ou -1 pour le moment)
-        k = int((p+plage[i]*(1-2*dir))%M) #site d'arrivée
-        
-        ## Diffusion
-        if e == 0:
-            if U[p]> 0 :
-                U[k] += 1
-                U[p] += -1
-        else:
-            if V[p] > 0:
-                V[k] += 1
-                V[p] += -1
+        if mem_t[i] == 0:
+            ## Diffusion 
+            e, mem_e = mem_e[-1], mem_e[: -1] # e détermine l'espèce qui va diffuser , et mem_e est actualisé sans cette valeur 
+            if e == 0: # donc c'est u qui va sauter
+                p, mem_u = mem_u[-1], mem_u[: -1] # p détermine le site de u qui va sauter, mem_u est actualisé sans sa dernière valeur qui a été utilisée pour le saut 
+            else: # donc c'est v qui va sauter
+                p, mem_v = mem_v[-1], mem_v[: -1]  # p détermine quel site de v va sauter, mem_v est actualisé sans sa dernière valeur qui a été utilisée pour le saut 
 
-        evol.append((e, k, p))
+            
+            ### Plus qu'à actualiser les positions avec le saut determiné
+            dir = bin[i]  # choisit la direction gauche ou droite (+1 ou -1 pour le moment)
+            k = int((p+plage[i]*(1-2*dir))%M) #site d'arrivée
+            
+            ## Diffusion
+            if e == 0:
+                if U[p]> 0 :
+                    U[k] += 1
+                    U[p] += -1
+            else:
+                if V[p] > 0:
+                    V[k] += 1
+                    V[p] += -1
+
+            evol.append((e, k, p))
         
 
         ## On rajoute la partie naissance mort
