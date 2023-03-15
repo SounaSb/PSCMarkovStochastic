@@ -94,7 +94,6 @@ def simul(N, M, D, R, T0, scen):
             dir = bin[i]  # choisit la direction gauche ou droite (+1 ou -1 pour le moment)
             kd = int((pd+plage[i]*(1-2*dir))%M) #site d'arrivée
             
-            ## Diffusion
             if ed == 0:
                 if U[pd]> 0 :
                     U[kd] += 1
@@ -105,6 +104,7 @@ def simul(N, M, D, R, T0, scen):
                     V[pd] += -1
 
             evol.append((ed, kd, pd,jumptype))
+            
         elif (mem_t[i]==1):
             jumptype=1
             ## determination du site de naissance et maj
