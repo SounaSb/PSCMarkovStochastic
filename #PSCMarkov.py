@@ -8,12 +8,11 @@ from tqdm import tqdm
 
 
 ## Le code qui calcul
-def simul(N, M, D, R, T0, scen):
+def simul(scen):
     U0, V0 = scen()
     T = np.zeros(N)
     U = U0.copy()
     V = V0.copy()
-    T[0] = T0
     
     exp = np.random.exponential(1,N)
     bin = np.random.binomial(1, 0.5, N) # évolution à droite ou à gauche
@@ -32,17 +31,15 @@ def simul(N, M, D, R, T0, scen):
     mem_em = []
     mem_t = []
 
-    dT = 0  
-
     for i in tqdm(range(1,N)):
 
         if len(mem_t) == 0: # on réactualise si une des listes mémoires est vide
             ### Paramètres de poids de chaque slot en fonction des population et du role (croisé, diff)
             ## Diffusion
-            seg_ud = U*(D[0][0] + D[0][1]*U + D[0][2]*V) 
+            seg_ud = U*(D[0][0] + D[0][1]*U + D[0][2]*V)
             seg_vd = V*(D[1][0] + D[1][1]*U + D[1][2]*V)
             ## Naissance
-            seg_un = U*R[0][0] 
+            seg_un = U*R[0][0]
             seg_vn = V*R[1][0]
             ## Mort
             seg_um = U*(R[0][1]*U + R[0][2]*V) 
@@ -57,7 +54,7 @@ def simul(N, M, D, R, T0, scen):
            
             dT = exp[i]/param # intervalle de temps jusqu'au prochain saut
             T[i] = T[i-1]+dT # temps du saut i
-            
+    
             
             ### type d'évolution
             mem_t=np.random.choice(np.array([0,1,2]), 
@@ -98,13 +95,13 @@ def simul(N, M, D, R, T0, scen):
             kd = int((pd+plage[i]*(1-2*dir))%M) #site d'arrivée
             
             if ed == 0:
-                if U[pd]> 0 :
-                    U[kd] += 1
-                    U[pd] += -1
+                if U[pd]> (M*delta) :
+                    U[kd] += (M*delta)
+                    U[pd] += -(M*delta)
             else:
-                if V[pd] > 0:
-                    V[kd] += 1
-                    V[pd] += -1
+                if V[pd] > (M*delta):
+                    V[kd] += (M*delta)
+                    V[pd] += -(M*delta)
 
             evol.append((ed, kd, pd,jumptype))
             
@@ -120,9 +117,9 @@ def simul(N, M, D, R, T0, scen):
             kn=pn
             ## Naissance
             if en == 0:
-                U[pn] += 1
+                U[pn] += (M*delta)
             else:
-                V[pn] += 1
+                V[pn] += (M*delta)
             evol.append((en, kn, pn,jumptype))
         
         elif (mem_t[-1]==2):
@@ -137,13 +134,14 @@ def simul(N, M, D, R, T0, scen):
             km=pm
             ## mort
             if em == 0:
-                if U[pm]> 0 :
-                    U[pm] += -1
+                if U[pm]> (M*delta) :
+                    U[pm] += -(M*delta)
             else:
-                if V[pm]> 0 :
-                    V[pm] += -1 
+                if V[pm]> (M*delta) :
+                    V[pm] += -(M*delta)
             evol.append((em, km, pm,jumptype))
         mem_t= mem_t[:-1]
+
   
     return evol, T
 
@@ -165,12 +163,11 @@ n=0
 def moving_average(x, w):
     return np.convolve(x, np.ones(w), mode='same')/w
 
-def Animate(evol,scenario,T,vitesse,suivi,moy,filename=''): 
+def Animate(evol,scenario,T,suivi,moy,filename=''): 
     t=np.linspace(0,T[-1],3*N)
     xmin = 0
     xmax = 1
     nbx = M
-    dt = vitesse 
 
     U, V = scenario()
     Uprime = [U]
@@ -188,23 +185,23 @@ def Animate(evol,scenario,T,vitesse,suivi,moy,filename=''):
         e, k, p, jump_type = evol[i]
         if jump_type == 0:
             if e==0:
-                Utemp[k] += 1
-                Utemp[p] += -1
+                Utemp[k] += (M*delta)
+                Utemp[p] += -(M*delta)
             elif e == 1:
-                Vtemp[k] += 1
-                Vtemp[p] += -1
+                Vtemp[k] += (M*delta)
+                Vtemp[p] += -(M*delta)
         if jump_type == 1:
             if e==0:
-                Utemp[p] += 1
+                Utemp[p] += (M*delta)
             elif e == 1:
-                Vtemp[p] += 1
+                Vtemp[p] += (M*delta)
         if jump_type == 2:
            if e==0:
-            if Utemp[p]>0:
-                Utemp[p] += -1
+            if Utemp[p]>(M*delta):
+                Utemp[p] += -(M*delta)
            elif e == 1:
-            if Vtemp[p]>0:
-                Vtemp[p] += -1
+            if Vtemp[p]>(M*delta):
+                Vtemp[p] += -(M*delta)
           
 
         # Suivi position
@@ -217,7 +214,7 @@ def Animate(evol,scenario,T,vitesse,suivi,moy,filename=''):
                     Ptemp = evol[i][1]
 
         # Pocessus d'acceleration
-        if i % int(dt*M) == 0:
+        if i % (N//250) == 0:
             Uprime.append(Utemp.copy())
             Vprime.append(Vtemp.copy())
             Pprime.append(Ptemp)
@@ -230,7 +227,7 @@ def Animate(evol,scenario,T,vitesse,suivi,moy,filename=''):
     Pline, = plt.plot([], [], color ='green', marker='o', markersize=5) 
 
     plt.xlim(xmin, xmax)
-    plt.ylim(-1, 1.5*np.max([np.max(U), np.max(V)]))
+    plt.ylim(-0.1, 8)
 
     st = plt.suptitle("", fontweight="bold")
 
@@ -242,7 +239,7 @@ def Animate(evol,scenario,T,vitesse,suivi,moy,filename=''):
             if suivi==0:
                 Pline.set_data([Pprime[i]], [moving_average(Uprime[i],M//17)[Pprime[i]]])
             else:
-                Pline.set_data([Pprime[i]], [moving_average(Vprime[i],M//17)(Vprime[i],M//17)[Pprime[i]]])
+                Pline.set_data([Pprime[i]], [moving_average(Vprime[i],M//17)[Pprime[i]]])
 
         # Avec bruit
         else:
@@ -253,7 +250,7 @@ def Animate(evol,scenario,T,vitesse,suivi,moy,filename=''):
             else:
                 Pline.set_data([Pprime[i]], [Vprime[i][Pprime[i]]])
         
-        st.set_text(str(int(100*(i/(N//(dt*M)))))+"%")
+        st.set_text(f"t={T[i]}s ;" + str(int(100*(i/len(Uprime))))+"%")
 
         return Uline, Vline, Pline
  
@@ -273,60 +270,32 @@ def Animate(evol,scenario,T,vitesse,suivi,moy,filename=''):
 
 
 ## On exécute maintenant
-D = [[10, 1, 2] , 
-     [1, 5, 1]]
-R = [[10, 1e-3, 1e-3] , 
-     [10, 1e-3, 1e-3]]
-M = 1000
-
-N = 10000000
-T0 = 0
+D = [[0.005, 0, 3] , [0.005, 0, 0]]
+R = [[5, 3, 1] , [2, 1, 3]]
+M = 200
+N = 2000000
+delta = 1e-5
 absc = np.linspace(start = 0, stop = 1, num = M)
-
-# Creneau 1/l nb de site au milieu
-def creneau(x, M, prop, pos):
-    k = M//prop
-    for i in range(k):
-        if pos == 'centre':
-            x[i+int((prop-1)/2*k)] += 150
-        elif pos == 'gauche':
-            x[i+int((prop-1)/4*k)] += 150
-        else:
-            x[i+int(3*(prop-1)/4*k)] += 150
 
 
 ## Scenarios
 # Intru scenario
 def intru():
-    U0 = 0*absc+80
-    V0 = 0*absc+20
-    creneau(V0, M, 6, 'centre')
+    V0 = 0*absc+np.rint(0.8/(M*delta))*(M*delta)
+    U0 = 0*absc+np.rint(0.2/(M*delta))*(M*delta)
+    for i in range(int(0.2*M)):
+        V0[i+int(0.4*M)] += np.rint(1.5/(M*delta))*(M*delta)
     return U0, V0
 
-# Deux creneaux décalés scenario
-def crendec():
-    U0 = 0*absc+30
-    V0 = 0*absc+30
-    creneau(V0, M, 10, 'gauche')
-    creneau(U0, M, 10, 'droite')
+## sin dec:
+def sindec():
+    U0 = M*delta*np.rint((1+np.sin(2*np.pi*absc))/(M*delta))
+    V0 = M*delta*np.rint((1+np.cos(2*np.pi*absc))/(M*delta))
     return U0, V0
-
-# Formation X
-def xlin():
-    U0 = 200*absc+10
-    V0 = 200*(1-absc)+10
-    return U0, V0
-
 
 
 # On calcul
-evol,T = simul(N,M,D,R,T0,intru)
+evol, T = simul(intru)
 
 # On anime
-Animate(evol, intru, T, vitesse = 2000/M, suivi=0, moy=False)
-
-#Affichage des conditions initiales
-#U0, V0 = intru()
-#plt.plot(absc,U0, color = 'red') 
-#plt.plot(absc,V0, color = 'blue')
-#plt.show()
+Animate(evol, intru, T, suivi=0, moy=False)
