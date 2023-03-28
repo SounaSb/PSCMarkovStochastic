@@ -215,7 +215,7 @@ def Animate(evol,scenario,T,suivi,moy,filename=''):
                 parc = [Utemp, Vtemp]
                 if parc[suivi][Ptemp] == 0:
                     pass
-                elif test[i]>1/parc[suivi][Ptemp]:
+                elif test[i]>delta/parc[suivi][Ptemp]:
                     Ptemp = evol[i][1]
 
         # Pocessus d'acceleration
