@@ -13,6 +13,7 @@ def simul(scen):
     T = np.zeros(N)
     U = U0.copy()
     V = V0.copy()
+    t=0
     
     exp = np.random.exponential(1,N)
     bin = np.random.binomial(1, 0.5, N) # évolution à droite ou à gauche
@@ -30,6 +31,8 @@ def simul(scen):
     mem_vm = []
     mem_em = []
     mem_t = []
+    
+    print("Lancement de la simulation")
 
     for i in tqdm(range(1,N)):
 
@@ -53,7 +56,8 @@ def simul(scen):
             
            
             dT = exp[i]/param # intervalle de temps jusqu'au prochain saut
-            T[i] = T[i-1]+dT # temps du saut i
+            t+=dT
+            T[i] = t  # temps du saut i
     
             
             ### type d'évolution
@@ -181,6 +185,7 @@ def Animate(evol,scenario,T,suivi,moy,filename=''):
     test = np.random.uniform(0,1, size=N)
 
     # On reconstruit notre évolution
+    print("Lancement de l'animation")
     for i in tqdm(range(N)):
         
         # Construction de nos populations
@@ -309,9 +314,12 @@ def test():
     V0=1 + np.sin(2 * np.pi * absc)
     return U0,V0
     
-
+# Type de simulation
+simul_type = test
 # On calcul
-evol, T = simul(test)
-
+evol, T = simul(simul_type)
 # On anime
-Animate(evol, test, T, suivi=0, moy=False)
+Animate(evol, simul_type, T, suivi=0, moy=False)
+
+
+print(T[-1])
