@@ -10,7 +10,7 @@ from tqdm import tqdm
 ## Le code qui calcul
 def simul(scen):
     U0, V0 = scen()
-    T = np.zeros(N)
+    T = []
     U = U0.copy()
     V = V0.copy()
     t=0
@@ -57,7 +57,7 @@ def simul(scen):
            
             dT = exp[i]/param # intervalle de temps jusqu'au prochain saut
             t+=dT
-            T[i] = t  # temps du saut i
+            T.append(t)  # temps du saut i
     
             
             ### type d'évolution
@@ -146,7 +146,8 @@ def simul(scen):
             evol.append((em, km, pm,jumptype))
         mem_t= mem_t[:-1]
 
-  
+    print(t)
+    print(T[-1])
     return evol, T
 
 
@@ -161,7 +162,6 @@ def simul(scen):
 ## Partie animation
 import matplotlib.animation as animation
 import time
-t = None
 n=0
 
 def moving_average(x, w):
@@ -169,11 +169,9 @@ def moving_average(x, w):
 
 def Animate(evol,scenario,T,suivi,moy,filename=''): 
     plt.style.use("seaborn-talk")
-    t=np.linspace(0,T[-1],3*N)
     
     xmin = 0
     xmax = 1
-    nbx = M
 
     U, V = scenario()
     Uprime = [U]
@@ -225,8 +223,6 @@ def Animate(evol,scenario,T,suivi,moy,filename=''):
             Uprime.append(Utemp.copy())
             Vprime.append(Vtemp.copy())
             Pprime.append(Ptemp)
-    
-    x = np.linspace(xmin, xmax, nbx)
 
     fig , ax = plt.subplots()
     ax.set_xlabel("Space")
@@ -268,6 +264,8 @@ def Animate(evol,scenario,T,suivi,moy,filename=''):
         st.set_text("Population dynamics simulation at t={}s".format(
                     str(np.round(T[i], decimals=2))
                 ))
+        
+        print(T[i])
         return Uarea, Varea, Pline
  
     ani = animation.FuncAnimation(fig, anim, frames= len(Uprime),interval=1, blit=True, repeat=True)
@@ -321,5 +319,3 @@ evol, T = simul(simul_type)
 # On anime
 Animate(evol, simul_type, T, suivi=0, moy=False)
 
-
-print(T[-1])
