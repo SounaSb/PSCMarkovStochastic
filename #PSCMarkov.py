@@ -176,6 +176,7 @@ def Animate(evol,scenario,T,suivi,moy,filename=''):
     U, V = scenario()
     Uprime = [U]
     Vprime = [V]
+    Tprime = [T[0]]
     Utemp, Vtemp = U.copy(), V.copy()
 
     Ptemp = [M//2]
@@ -223,6 +224,7 @@ def Animate(evol,scenario,T,suivi,moy,filename=''):
             Uprime.append(Utemp.copy())
             Vprime.append(Vtemp.copy())
             Pprime.append(Ptemp)
+            Tprime.append(T[i])
 
     fig , ax = plt.subplots()
     ax.set_xlabel("Space")
@@ -263,7 +265,7 @@ def Animate(evol,scenario,T,suivi,moy,filename=''):
         
         
         st.set_text("Population dynamics simulation at t={}s".format(
-                    str(np.round(T[i], decimals=2))
+                    str(np.round(Tprime[i], decimals=2))
                 ))
         
         print(T[i])
