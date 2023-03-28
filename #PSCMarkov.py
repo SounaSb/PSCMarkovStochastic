@@ -74,10 +74,7 @@ def simul(scen):
             par_m = seg_um.sum() + seg_vm.sum()
             param = par_d + par_n + par_m # somme de tous les poids : diffusion, naissance, mort et pour les 2 populations
             
-           
-            dT = exp[i]/param # intervalle de temps jusqu'au prochain saut
-            t+=dT
-            T.append(t)  # temps du saut i
+        
     
             
             ### type d'évolution
@@ -257,7 +254,14 @@ def Animate(evol,scenario,T,suivi,moy,filename=''):
     plt.ylim(-0.1, 8)
     
 
-    st = plt.suptitle("", fontweight="bold")
+    time_text = ax.text(
+            0.5,
+            0.95,
+            "",
+            horizontalalignment="center",
+            verticalalignment="center",
+            transform=ax.transAxes,
+        )
 
     def anim(i):
         # Cas moyenné
@@ -284,12 +288,10 @@ def Animate(evol,scenario,T,suivi,moy,filename=''):
                 Pline.set_data(absc[Pprime[i]], [Vprime[i][Pprime[i]]])
         
         
-        st.set_text("Population dynamics simulation at t={}s".format(
+        time_text.set_text("Population dynamics simulation at t={}s".format(
                     str(np.round(Tprime[i], decimals=2))
                 ))
-        
-        print(T[i])
-        return Uarea, Varea, Pline
+        return Uarea, Varea, Pline, time_text
  
     ani = animation.FuncAnimation(fig, anim, frames= len(Uprime),interval=1, blit=True, repeat=True)
     plt.show()
