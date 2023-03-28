@@ -3,8 +3,8 @@ from tqdm import tqdm
 
 
 ## Le code qui calcul
-def simul(scen,N,M,D,R,delta):
-    U0, V0 = scen()
+def simul(scen,N,M,delta):
+    U0, V0 ,D,R = scen()
     T = []
     U = U0.copy()
     V = V0.copy()

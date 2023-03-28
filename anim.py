@@ -127,13 +127,14 @@ def Animate(evol,scenario,T,suivi,moy,filename='',length: float = 7):
         w = animation.FFMpegWriter(fps=60, bitrate=1800)
 
 
-def Animate(evol,scenario,T,suivi,moy,filename='',length: float = 7): 
+def Animate(evol,absc,N,M,delta,scenario,T,suivi,moy,filename='',length: float = 7): 
     plt.style.use("seaborn-talk")
     
     xmin = 0
     xmax = 1
 
-    U, V = scenario()
+    U, V ,D,R= scenario()
+    ymax=max(max(U),max(V))
     Uprime = [U]
     Vprime = [V]
     Tprime = [T[0]]
@@ -152,15 +153,23 @@ def Animate(evol,scenario,T,suivi,moy,filename='',length: float = 7):
         if jump_type == 0:
             if e==0:
                 Utemp[k] += (M*delta)
+                if Utemp[k]>ymax :
+                    ymax = Utemp[k]
                 Utemp[p] += -(M*delta)
             elif e == 1:
                 Vtemp[k] += (M*delta)
+                if Vtemp[k]>ymax :
+                    ymax = Vtemp[k]
                 Vtemp[p] += -(M*delta)
         if jump_type == 1:
             if e==0:
                 Utemp[p] += (M*delta)
+                if Utemp[p]>ymax :
+                    ymax = Utemp[p]
             elif e == 1:
                 Vtemp[p] += (M*delta)
+                if Vtemp[p]>ymax :
+                    ymax = Vtemp[p]
         if jump_type == 2:
            if e==0:
             if Utemp[p]>(M*delta):
@@ -188,13 +197,13 @@ def Animate(evol,scenario,T,suivi,moy,filename='',length: float = 7):
 
     fig , ax = plt.subplots()
     ax.set_xlabel("Space")
-    ax.set_ylabel("Concentrations")
+    #ax.set_ylabel("Concentrations")
     #Uline, = plt.plot([], [], color ='red') 
     #Vline, = plt.plot([], [], color ='blue')
     Pline, = plt.plot([], [], color ='green', marker='o', markersize=5) 
 
     plt.xlim(xmin, xmax)
-    plt.ylim(-0.1, 8)
+    plt.ylim(-0.1, ymax)
     
 
     time_text = ax.text(
