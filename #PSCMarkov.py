@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import math as mt
 import copy
 from tqdm import tqdm
+from math import ceil
 
 
 ## Le code qui calcul
@@ -52,7 +53,7 @@ def simul(scen):
 
     for i in tqdm(range(1,N)):
     
-        dT = exp[i]/param # intervalle de temps jusqu'au prochain saut
+        dT = exp[i] / param # intervalle de temps jusqu'au prochain saut
         t+=dT
         T.append(t)  # temps du saut i
 
@@ -162,9 +163,6 @@ def simul(scen):
                     V[pm] += -(M*delta)
             evol.append((em, km, pm,jumptype))
         mem_t= mem_t[:-1]
-
-    print(t)
-    print(T[-1])
     return evol, T
 
 
@@ -184,7 +182,7 @@ n=0
 def moving_average(x, w):
     return np.convolve(x, np.ones(w), mode='same')/w
 
-def Animate(evol,scenario,T,suivi,moy,filename=''): 
+def Animate(evol,scenario,T,suivi,moy,filename='',length: float = 7): 
     plt.style.use("seaborn-talk")
     
     xmin = 0
@@ -264,6 +262,7 @@ def Animate(evol,scenario,T,suivi,moy,filename=''):
         )
 
     def anim(i):
+        
         # Cas moyenné
         if moy:
             #Uline.set_data(x, moving_average(Uprime[i],M//15))
