@@ -164,7 +164,9 @@ def moving_average(x, w):
     return np.convolve(x, np.ones(w), mode='same')/w
 
 def Animate(evol,scenario,T,suivi,moy,filename=''): 
+    plt.style.use("seaborn-talk")
     t=np.linspace(0,T[-1],3*N)
+    
     xmin = 0
     xmax = 1
     nbx = M
@@ -221,9 +223,11 @@ def Animate(evol,scenario,T,suivi,moy,filename=''):
     
     x = np.linspace(xmin, xmax, nbx)
 
-    fig = plt.figure()
-    Uline, = plt.plot([], [], color ='red') 
-    Vline, = plt.plot([], [], color ='blue')
+    fig , ax = plt.subplots()
+    ax.set_xlabel("Space")
+    ax.set_ylabel("Concentrations")
+    #Uline, = plt.plot([], [], color ='red') 
+    #Vline, = plt.plot([], [], color ='blue')
     Pline, = plt.plot([], [], color ='green', marker='o', markersize=5) 
 
     plt.xlim(xmin, xmax)
@@ -234,8 +238,10 @@ def Animate(evol,scenario,T,suivi,moy,filename=''):
     def anim(i):
         # Cas moyenné
         if moy:
-            Uline.set_data(x, moving_average(Uprime[i],M//15))
-            Vline.set_data(x, moving_average(Vprime[i],M//15))
+            #Uline.set_data(x, moving_average(Uprime[i],M//15))
+            #Vline.set_data(x, moving_average(Vprime[i],M//15))
+            Uarea = ax.fill_between(absc, moving_average(Uprime[i],M//15), color="#f44336", alpha=0.5)
+            Varea = ax.fill_between(absc, moving_average(Vprime[i],M//15), color="#3f51b5", alpha=0.5)    
             if suivi==0:
                 Pline.set_data([Pprime[i]], [moving_average(Uprime[i],M//17)[Pprime[i]]])
             else:
@@ -243,18 +249,23 @@ def Animate(evol,scenario,T,suivi,moy,filename=''):
 
         # Avec bruit
         else:
-            Uline.set_data(x, Uprime[i])
-            Vline.set_data(x, Vprime[i])
+            #Uline.set_data(x, Uprime[i])
+            #Vline.set_data(x, Vprime[i])
+            Uarea = ax.fill_between(absc, Uprime[i], color="#f44336", alpha=0.5)
+            Varea = ax.fill_between(absc, Vprime[i], color="#3f51b5", alpha=0.5)
+            
             if suivi==0:
                 Pline.set_data([Pprime[i]], [Uprime[i][Pprime[i]]])
             else:
                 Pline.set_data([Pprime[i]], [Vprime[i][Pprime[i]]])
         
-        st.set_text(f"t={T[i]}s ;" + str(int(100*(i/len(Uprime))))+"%")
-
-        return Uline, Vline, Pline
+        
+        st.set_text("Population dynamics simulation at t={}s".format(
+                    str(np.round(T[i], decimals=2))
+                ))
+        return Uarea, Varea, Pline
  
-    ani = animation.FuncAnimation(fig, anim, frames= len(Uprime),interval=1, repeat=True)
+    ani = animation.FuncAnimation(fig, anim, frames= len(Uprime),interval=1, blit=True, repeat=True)
     plt.show()
     
     if filename:
@@ -270,8 +281,8 @@ def Animate(evol,scenario,T,suivi,moy,filename=''):
 
 
 ## On exécute maintenant
-D = [[0.005, 0, 3] , [0.005, 0, 0]]
-R = [[5, 3, 1] , [2, 1, 3]]
+D=[[0.005, 0, 3], [0.005, 0, 0]]
+R=[[5, 3, 1], [2, 1, 3]]
 M = 200
 N = 2000000
 delta = 1e-5
@@ -293,9 +304,14 @@ def sindec():
     V0 = M*delta*np.rint((1+np.cos(2*np.pi*absc))/(M*delta))
     return U0, V0
 
+def test():
+    U0=1 + np.cos(2 * np.pi * absc)
+    V0=1 + np.sin(2 * np.pi * absc)
+    return U0,V0
+    
 
 # On calcul
-evol, T = simul(intru)
+evol, T = simul(test)
 
 # On anime
-Animate(evol, intru, T, suivi=0, moy=False)
+Animate(evol, test, T, suivi=0, moy=False)
