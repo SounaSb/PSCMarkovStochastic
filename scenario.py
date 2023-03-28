@@ -70,7 +70,7 @@ def IntruderScenario():
 
     
 # Type de simulation
-simul_type = SineScenario2
+simul_type = test
 # On calcul
 evol, T = simul(simul_type,N,M,delta)
 # On anime

@@ -242,7 +242,7 @@ def Animate(evol,absc,N,M,delta,scenario,T,suivi,moy,filename='',length: float =
         
         
         time_text.set_text("Population dynamics simulation at t={}s".format(
-                    str(np.round(Tprime[i], decimals=2))
+                    str(np.round(Tprime[i]*delta, decimals=2))
                 ))
         return Uarea, Varea, Pline, time_text
  
