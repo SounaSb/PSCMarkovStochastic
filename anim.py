@@ -9,7 +9,7 @@ from sim import simul
 n=0
 
 
-def Animate(evol,scenario,T,suivi,moy,filename='',length: float = 7): 
+def Animate(evol,absc,N,M,delta,scenario,T,suivi,moy,filename='',length: float = 7): 
     plt.style.use("seaborn-talk")
     
     xmin = 0
