@@ -233,6 +233,7 @@ def Animate(evol,scenario,T,suivi,moy,filename=''):
 
     plt.xlim(xmin, xmax)
     plt.ylim(-0.1, 8)
+    
 
     st = plt.suptitle("", fontweight="bold")
 
@@ -244,9 +245,9 @@ def Animate(evol,scenario,T,suivi,moy,filename=''):
             Uarea = ax.fill_between(absc, moving_average(Uprime[i],M//15), color="#f44336", alpha=0.5)
             Varea = ax.fill_between(absc, moving_average(Vprime[i],M//15), color="#3f51b5", alpha=0.5)    
             if suivi==0:
-                Pline.set_data([Pprime[i]], [moving_average(Uprime[i],M//17)[Pprime[i]]])
+                Pline.set_data(absc[Pprime[i]], [moving_average(Uprime[i],M//17)[Pprime[i]]])
             else:
-                Pline.set_data([Pprime[i]], [moving_average(Vprime[i],M//17)[Pprime[i]]])
+                Pline.set_data(absc[Pprime[i]], [moving_average(Vprime[i],M//17)[Pprime[i]]])
 
         # Avec bruit
         else:
@@ -256,9 +257,9 @@ def Animate(evol,scenario,T,suivi,moy,filename=''):
             Varea = ax.fill_between(absc, Vprime[i], color="#3f51b5", alpha=0.5)
             
             if suivi==0:
-                Pline.set_data([Pprime[i]], [Uprime[i][Pprime[i]]])
+                Pline.set_data(absc[Pprime[i]], [Uprime[i][Pprime[i]]])
             else:
-                Pline.set_data([Pprime[i]], [Vprime[i][Pprime[i]]])
+                Pline.set_data(absc[Pprime[i]], [Vprime[i][Pprime[i]]])
         
         
         st.set_text("Population dynamics simulation at t={}s".format(
