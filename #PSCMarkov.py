@@ -33,8 +33,28 @@ def simul(scen):
     mem_t = []
     
     print("Lancement de la simulation")
+    
+    ## Diffusion
+    seg_ud = U*(D[0][0] + D[0][1]*U + D[0][2]*V)
+    seg_vd = V*(D[1][0] + D[1][1]*U + D[1][2]*V)
+    ## Naissance
+    seg_un = U*R[0][0]
+    seg_vn = V*R[1][0]
+    ## Mort
+    seg_um = U*(R[0][1]*U + R[0][2]*V) 
+    seg_vm = V*(R[1][1]*U + R[1][2]*V)
+
+    ## Paramètre de chaque action possible
+    par_d = seg_ud.sum() + seg_vd.sum()
+    par_n = seg_un.sum() + seg_vn.sum()
+    par_m = seg_um.sum() + seg_vm.sum()
+    param = par_d + par_n + par_m # somme de tous les poids : diffusion, naissance, mort et pour les 2 populations
 
     for i in tqdm(range(1,N)):
+    
+        dT = exp[i]/param # intervalle de temps jusqu'au prochain saut
+        t+=dT
+        T.append(t)  # temps du saut i
 
         if len(mem_t) == 0: # on réactualise si une des listes mémoires est vide
             ### Paramètres de poids de chaque slot en fonction des population et du role (croisé, diff)
