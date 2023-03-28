@@ -179,8 +179,16 @@ import matplotlib.animation as animation
 import time
 n=0
 
-def moving_average(x, w):
-    return np.convolve(x, np.ones(w), mode='same')/w
+
+
+def circular_mean(arr, w):
+    n = len(arr)
+    result = np.zeros(n)
+    for i in range(n):
+        result[i] = np.mean(np.roll(arr, i)[:w])
+    return result
+
+
 
 def Animate(evol,scenario,T,suivi,moy,filename='',length: float = 7): 
     plt.style.use("seaborn-talk")
@@ -267,12 +275,12 @@ def Animate(evol,scenario,T,suivi,moy,filename='',length: float = 7):
         if moy:
             #Uline.set_data(x, moving_average(Uprime[i],M//15))
             #Vline.set_data(x, moving_average(Vprime[i],M//15))
-            Uarea = ax.fill_between(absc, moving_average(Uprime[i],M//15), color="#f44336", alpha=0.5)
-            Varea = ax.fill_between(absc, moving_average(Vprime[i],M//15), color="#3f51b5", alpha=0.5)    
+            Uarea = ax.fill_between(absc, circular_mean(Uprime[i],M//15), color="#f44336", alpha=0.5)
+            Varea = ax.fill_between(absc, circular_mean(Vprime[i],M//15), color="#3f51b5", alpha=0.5)    
             if suivi==0:
-                Pline.set_data(absc[Pprime[i]], [moving_average(Uprime[i],M//17)[Pprime[i]]])
+                Pline.set_data(absc[Pprime[i]], [circular_mean(Uprime[i],M//17)[Pprime[i]]])
             else:
-                Pline.set_data(absc[Pprime[i]], [moving_average(Vprime[i],M//17)[Pprime[i]]])
+                Pline.set_data(absc[Pprime[i]], [circular_mean(Vprime[i],M//17)[Pprime[i]]])
 
         # Avec bruit
         else:
@@ -341,5 +349,5 @@ simul_type = test
 # On calcul
 evol, T = simul(simul_type)
 # On anime
-Animate(evol, simul_type, T, suivi=0, moy=False)
+Animate(evol, simul_type, T, suivi=0, moy=True)
 
