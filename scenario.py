@@ -7,8 +7,8 @@ from utils import plateau
 ## On exécute maintenant
 
 M = 200
-N = 2000000
-delta = 1e-6
+N = 30000000
+delta = 1e-5
 absc = np.linspace(start = 0, stop = 1, num = M)
 
 

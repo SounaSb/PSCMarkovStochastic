@@ -121,7 +121,7 @@ def Animate(evol,absc,N,M,delta,scenario,T,suivi,moy,filename='',length: float =
                 ))
         return Uarea, Varea, Pline, time_text
  
-    ani = animation.FuncAnimation(fig, anim, frames= len(Uprime),interval=1, blit=True, repeat=True)
+    ani = animation.FuncAnimation(fig, anim, frames= len(Uprime),interval=3, blit=True, repeat=True)
     plt.show()
     
     if filename:
@@ -216,7 +216,7 @@ def Animate(evol,absc,N,M,delta,scenario,T,suivi,moy,filename='',length: float =
             verticalalignment="center",
             transform=ax.transAxes,
         )
-
+    tmax = np.max(Tprime)
     def anim(i):
         # Time corresponding to frame index
         j = ceil(i * (len(Uprime[i]) - 1) / (len(Uprime) - 1))
@@ -244,9 +244,11 @@ def Animate(evol,absc,N,M,delta,scenario,T,suivi,moy,filename='',length: float =
                 Pline.set_data(absc[Pprime[i]], [Vprime[i][Pprime[i]]])
         
         
-        time_text.set_text("Population dynamics simulation at t={}s".format(
-                    str(np.round(Tprime[j]*delta, decimals=2))
-                ))
+        time_text.set_text("Simulation at t={}s ({}%)".format(
+                str(np.round(Tprime[i]*delta, decimals=2)),
+                str(int(100 * Tprime[i] / tmax)),
+            ))
+        
         return Uarea, Varea, Pline, time_text
  
     ani = animation.FuncAnimation(fig, anim, frames= len(Uprime),interval=20, blit=True, repeat=True)

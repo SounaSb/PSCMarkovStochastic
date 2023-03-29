@@ -15,7 +15,7 @@ def simul(scen,N,M,delta):
     plage = np.random.randint(1, 1+ M//40, N)
     
     # Optimisation
-    evol = [(2,0,0,3)]
+    evol = [(2,0,0,3)] # initialisation 
     mem_ud = []
     mem_vd = []
     mem_ed = []
