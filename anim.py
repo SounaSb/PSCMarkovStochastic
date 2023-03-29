@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 from utils import circular_mean
 from sim import simul
+from math import ceil
+
 n=0
 
 
@@ -216,7 +218,8 @@ def Animate(evol,absc,N,M,delta,scenario,T,suivi,moy,filename='',length: float =
         )
 
     def anim(i):
-        
+        # Time corresponding to frame index
+        j = ceil(i * (len(Uprime[i]) - 1) / (len(Uprime) - 1))
         # Cas moyenné
         if moy:
             #Uline.set_data(x, moving_average(Uprime[i],M//15))
@@ -242,11 +245,11 @@ def Animate(evol,absc,N,M,delta,scenario,T,suivi,moy,filename='',length: float =
         
         
         time_text.set_text("Population dynamics simulation at t={}s".format(
-                    str(np.round(Tprime[i]*delta, decimals=2))
+                    str(np.round(Tprime[j]*delta, decimals=2))
                 ))
         return Uarea, Varea, Pline, time_text
  
-    ani = animation.FuncAnimation(fig, anim, frames= len(Uprime),interval=1, blit=True, repeat=True)
+    ani = animation.FuncAnimation(fig, anim, frames= len(Uprime),interval=20, blit=True, repeat=True)
     plt.show()
     
     if filename:

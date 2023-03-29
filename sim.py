@@ -74,7 +74,8 @@ def simul(scen,N,M,delta):
             
             ### type d'évolution
             mem_t=np.random.choice(np.array([0,1,2]), 
-                                   p=np.array([par_d/param,par_n/param,par_m/param]),size=2000)    
+                                   p=np.array([par_d/param,par_n/param,par_m/param]),
+                                   size=2000)    
 
             ### Qui saute 
             qd = seg_vd.sum() / par_d     # probabilité que ce soit v qui diffuse plutôt que u
