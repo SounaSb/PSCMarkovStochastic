@@ -7,7 +7,11 @@ from utils import plateau
 ## On exécute maintenant
 
 M = 200
-N = 30000000
+Nprime = 1000 # grandeur caractéristique de la population
+
+N = 10000
+tauleaping = 10000 #compléxité en N*tauleaping
+
 delta = 1e-5
 absc = np.linspace(start = 0, stop = 1, num = M)
 
@@ -25,15 +29,36 @@ def intru():
 
 ## sin dec:
 def sindec():
-    D=np.array([[0.005, 0, 3], [0.005, 0, 0]])
-    R=np.array([[5, 3, 1], [2, 1, 3]])
+    D=np.array([[0.005, 0, 3],
+                [0.005, 0, 0]])
+    R=np.array([[5, 3, 1], 
+                [2, 1, 3]])
     U0 = M*delta*np.rint((1+np.sin(2*np.pi*absc))/(M*delta))
     V0 = M*delta*np.rint((1+np.cos(2*np.pi*absc))/(M*delta))
     return U0, V0, D, R
 
 def test():
-    D=np.array([[0.005, 0, 3], [0.005, 0, 0]])
-    R=np.array([[5, 3, 1], [2, 1, 3]])
+    D=np.array([[0.005, 0, 3], 
+                [0.005, 0, 0]])
+    R=np.array([[5, 3, 1], 
+                [2, 1, 3]])
+    U0=1 + np.cos(2 * np.pi * absc)
+    V0=1 + np.sin(2 * np.pi * absc)
+    return U0,V0, D, R
+def test2():
+    D=np.array([[10, 1e-8, 1e-8], 
+                [1e-8, 1e-8, 1e-8]])
+    R=np.array([[1e-8, 1e-8, 1e-8], 
+                [1e-8, 1e-8, 1e-8]])
+    U0=1 + np.cos(2 * np.pi * absc)
+    V0=1 + np.sin(2 * np.pi * absc)
+    return U0,V0, D, R
+
+def test3():
+    D=np.array([[10, 10, 10], 
+                [5, 5, 5]])
+    R=np.array([[1e-8, 1e-8, 1e-8], 
+                [1e-8, 1e-8, 1e-8]])
     U0=1 + np.cos(2 * np.pi * absc)
     V0=1 + np.sin(2 * np.pi * absc)
     return U0,V0, D, R
@@ -49,7 +74,7 @@ def SineScenario1():
     D=np.array([[0.005, 0, 3], [0.005, 0, 0]])
     R=np.array([[5, 3, 1], [2, 1, 3]])
     U0 = np.sin(4 * absc + .12)**2
-    V0 = np.sin(4 *  absc - .12)**2
+    V0 = np.sin(4 * absc - .12)**2
     return U0,V0, D, R
 
 def SineScenario2():
@@ -72,6 +97,7 @@ def IntruderScenario():
 # Type de simulation
 simul_type = test
 # On calcul
-evol, T = simul(simul_type,N,M,delta)
+evol, T = simul(simul_type,N,Nprime,tauleaping,M,delta)
+
 # On anime
-Animate(evol,absc,N,M,delta, simul_type, T, suivi=0, moy=False)
+Animate(evol,absc,N,Nprime,tauleaping,M,delta,simul_type,T, suivi=0, moy=False)

@@ -10,128 +10,8 @@ from math import ceil
 
 n=0
 
-
-def Animate(evol,absc,N,M,delta,scenario,T,suivi,moy,filename='',length: float = 7): 
+def Animate(evol,absc,N,Nprime,tauleaping,M,delta,scenario,T,suivi,moy,filename='',length: float = 7): 
     plt.style.use("seaborn-talk")
-    
-    xmin = 0
-    xmax = 1
-
-    U, V = scenario()
-    Uprime = [U]
-    Vprime = [V]
-    Tprime = [T[0]]
-    Utemp, Vtemp = U.copy(), V.copy()
-
-    Ptemp = [M//2]
-    Pprime = [M//2]
-    test = np.random.uniform(0,1, size=N)
-
-    # On reconstruit notre évolution
-    print("Lancement de l'animation")
-    for i in tqdm(range(N)):
-        
-        # Construction de nos populations
-        e, k, p, jump_type = evol[i]
-        if jump_type == 0:
-            if e==0:
-                Utemp[k] += (M*delta)
-                Utemp[p] += -(M*delta)
-            elif e == 1:
-                Vtemp[k] += (M*delta)
-                Vtemp[p] += -(M*delta)
-        if jump_type == 1:
-            if e==0:
-                Utemp[p] += (M*delta)
-            elif e == 1:
-                Vtemp[p] += (M*delta)
-        if jump_type == 2:
-           if e==0:
-            if Utemp[p]>(M*delta):
-                Utemp[p] += -(M*delta)
-           elif e == 1:
-            if Vtemp[p]>(M*delta):
-                Vtemp[p] += -(M*delta)
-          
-
-        # Suivi position
-        if suivi == evol[i][0]:
-            if evol[i][2] == Ptemp:
-                parc = [Utemp, Vtemp]
-                if parc[suivi][Ptemp] == 0:
-                    pass
-                elif test[i]>delta/parc[suivi][Ptemp]:
-                    Ptemp = evol[i][1]
-
-        # Pocessus d'acceleration
-        if i % (N//250) == 0:
-            Uprime.append(Utemp.copy())
-            Vprime.append(Vtemp.copy())
-            Pprime.append(Ptemp)
-            Tprime.append(T[i])
-
-    fig , ax = plt.subplots()
-    ax.set_xlabel("Space")
-    ax.set_ylabel("Concentrations")
-    #Uline, = plt.plot([], [], color ='red') 
-    #Vline, = plt.plot([], [], color ='blue')
-    Pline, = plt.plot([], [], color ='green', marker='o', markersize=5) 
-
-    plt.xlim(xmin, xmax)
-    plt.ylim(-0.1, 8)
-    
-
-    time_text = ax.text(
-            0.5,
-            0.95,
-            "",
-            horizontalalignment="center",
-            verticalalignment="center",
-            transform=ax.transAxes,
-        )
-
-    def anim(i):
-        
-        # Cas moyenné
-        if moy:
-            #Uline.set_data(x, moving_average(Uprime[i],M//15))
-            #Vline.set_data(x, moving_average(Vprime[i],M//15))
-            Uarea = ax.fill_between(absc, circular_mean(Uprime[i],M//15), color="#f44336", alpha=0.5)
-            Varea = ax.fill_between(absc, circular_mean(Vprime[i],M//15), color="#3f51b5", alpha=0.5)    
-            if suivi==0:
-                Pline.set_data(absc[Pprime[i]], [circular_mean(Uprime[i],M//17)[Pprime[i]]])
-            else:
-                Pline.set_data(absc[Pprime[i]], [circular_mean(Vprime[i],M//17)[Pprime[i]]])
-
-        # Avec bruit
-        else:
-            #Uline.set_data(x, Uprime[i])
-            #Vline.set_data(x, Vprime[i])
-            Uarea = ax.fill_between(absc, Uprime[i], color="#f44336", alpha=0.5)
-            Varea = ax.fill_between(absc, Vprime[i], color="#3f51b5", alpha=0.5)
-            
-            if suivi==0:
-                Pline.set_data(absc[Pprime[i]], [Uprime[i][Pprime[i]]])
-            else:
-                Pline.set_data(absc[Pprime[i]], [Vprime[i][Pprime[i]]])
-        
-        
-        time_text.set_text("Population dynamics simulation at t={}s".format(
-                    str(np.round(Tprime[i], decimals=2))
-                ))
-        return Uarea, Varea, Pline, time_text
- 
-    ani = animation.FuncAnimation(fig, anim, frames= len(Uprime),interval=3, blit=True, repeat=True)
-    plt.show()
-    
-    if filename:
-        w = animation.writers['ffmpeg']
-        w = animation.FFMpegWriter(fps=60, bitrate=1800)
-
-
-def Animate(evol,absc,N,M,delta,scenario,T,suivi,moy,filename='',length: float = 7): 
-    plt.style.use("seaborn-talk")
-    
     xmin = 0
     xmax = 1
 
@@ -140,48 +20,50 @@ def Animate(evol,absc,N,M,delta,scenario,T,suivi,moy,filename='',length: float =
     Uprime = [U]
     Vprime = [V]
     Tprime = [T[0]]
-    Utemp, Vtemp = U.copy(), V.copy()
+    Utemp, Vtemp = np.copy(U), np.copy(V)
 
     Ptemp = [M//2]
     Pprime = [M//2]
-    test = np.random.uniform(0,1, size=N)
-
     # On reconstruit notre évolution
     print("Lancement de l'animation")
-    for i in tqdm(range(N)):
+    for i in tqdm(range(N*tauleaping)):
         
         # Construction de nos populations
-        e, k, p, jump_type = evol[i]
+        e, k, p, jump_type = evol[i][0],evol[i][1],evol[i][2],evol[i][3]
+        k = int(k)
+        p = int(p)
+        
         if jump_type == 0:
             if e==0:
-                Utemp[k] += (M*delta)
+                Utemp[k] += 1/Nprime
                 if Utemp[k]>ymax :
                     ymax = Utemp[k]
-                Utemp[p] += -(M*delta)
+                Utemp[p] += -(1/Nprime)
             elif e == 1:
-                Vtemp[k] += (M*delta)
+                Vtemp[k] += (1/Nprime)
                 if Vtemp[k]>ymax :
                     ymax = Vtemp[k]
-                Vtemp[p] += -(M*delta)
+                Vtemp[p] += -(1/Nprime)
         if jump_type == 1:
             if e==0:
-                Utemp[p] += (M*delta)
+                Utemp[p] += (1/Nprime)
                 if Utemp[p]>ymax :
                     ymax = Utemp[p]
             elif e == 1:
-                Vtemp[p] += (M*delta)
+                Vtemp[p] += (1/Nprime)
                 if Vtemp[p]>ymax :
                     ymax = Vtemp[p]
         if jump_type == 2:
            if e==0:
-            if Utemp[p]>(M*delta):
-                Utemp[p] += -(M*delta)
+            if Utemp[p]>1/Nprime:
+                Utemp[p] += -(1/Nprime)
            elif e == 1:
-            if Vtemp[p]>(M*delta):
-                Vtemp[p] += -(M*delta)
+            if Vtemp[p]>1/Nprime:
+                Vtemp[p] += -(1/Nprime)
           
-
+        """
         # Suivi position
+    
         if suivi == evol[i][0]:
             if evol[i][2] == Ptemp:
                 parc = [Utemp, Vtemp]
@@ -189,13 +71,24 @@ def Animate(evol,absc,N,M,delta,scenario,T,suivi,moy,filename='',length: float =
                     pass
                 elif test[i]>delta/parc[suivi][Ptemp]:
                     Ptemp = evol[i][1]
+        """
+        
+        if suivi :
+            if k == Ptemp[-1]:
+                random_pop = np.random.binomial(1,1/Nprime*Utemp[p])
+                random_pop = 1
+                if random_pop == 1 :
+                    Ptemp.append(p)
+            else :
+                Ptemp.append(Ptemp[-1])
 
         # Pocessus d'acceleration
-        if i % (N//250) == 0:
-            Uprime.append(Utemp.copy())
-            Vprime.append(Vtemp.copy())
-            Pprime.append(Ptemp)
+        if i % (N*tauleaping//200) == 0:
+            Uprime.append(np.copy(Utemp))
+            Vprime.append(np.copy(Vtemp))
+            Pprime.append(Ptemp[-1])
             Tprime.append(T[i])
+            
 
     fig , ax = plt.subplots()
     ax.set_xlabel("Space")
@@ -218,8 +111,6 @@ def Animate(evol,absc,N,M,delta,scenario,T,suivi,moy,filename='',length: float =
         )
     tmax = np.max(Tprime)
     def anim(i):
-        # Time corresponding to frame index
-        j = ceil(i * (len(Uprime[i]) - 1) / (len(Uprime) - 1))
         # Cas moyenné
         if moy:
             #Uline.set_data(x, moving_average(Uprime[i],M//15))
@@ -238,10 +129,8 @@ def Animate(evol,absc,N,M,delta,scenario,T,suivi,moy,filename='',length: float =
             Uarea = ax.fill_between(absc, Uprime[i], color="#f44336", alpha=0.5)
             Varea = ax.fill_between(absc, Vprime[i], color="#3f51b5", alpha=0.5)
             
-            if suivi==0:
+            if suivi==1:
                 Pline.set_data(absc[Pprime[i]], [Uprime[i][Pprime[i]]])
-            else:
-                Pline.set_data(absc[Pprime[i]], [Vprime[i][Pprime[i]]])
         
         
         time_text.set_text("Simulation at t={}s ({}%)".format(
@@ -251,7 +140,7 @@ def Animate(evol,absc,N,M,delta,scenario,T,suivi,moy,filename='',length: float =
         
         return Uarea, Varea, Pline, time_text
  
-    ani = animation.FuncAnimation(fig, anim, frames= len(Uprime),interval=20, blit=True, repeat=True)
+    ani = animation.FuncAnimation(fig, anim, frames= len(Uprime),interval=100, blit=True, repeat=True)
     plt.show()
     
     if filename:
