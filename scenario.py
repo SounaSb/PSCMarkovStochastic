@@ -7,9 +7,9 @@ from utils import plateau
 ## On exécute maintenant
 
 M = 200
-Nprime = 1000 # grandeur caractéristique de la population
+Nprime = 800 # grandeur caractéristique de la population
 
-N = 10000
+N = 5000
 tauleaping = 10000 #compléxité en N*tauleaping
 
 delta = 1e-5

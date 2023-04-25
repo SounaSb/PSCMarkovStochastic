@@ -8,12 +8,12 @@ def simul(scen,N,Nprime,tauleaping,M,delta):
     U0, V0 ,D,R = scen()
     x=np.arange(M)
     
-    R[0][0]/=float(Nprime)
-    R[0][1]/=float(Nprime)
-    R[0][2]/=float(Nprime)
-    R[1][0]/=float(Nprime)
-    R[1][1]/=float(Nprime)
-    R[1][2]/=float(Nprime)
+    R[0][0]/=float(M)
+    R[0][1]/=float(M)
+    R[0][2]/=float(M)
+    R[1][0]/=float(M)
+    R[1][1]/=float(M)
+    R[1][2]/=float(M)
         
     U0 = np.floor(Nprime*U0)/Nprime
     V0 = np.floor(Nprime*V0)/Nprime
