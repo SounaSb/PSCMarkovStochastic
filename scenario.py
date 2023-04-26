@@ -9,8 +9,8 @@ from utils import plateau
 M = 200
 Nprime = 1000 # grandeur caractéristique de la population
 
-N = 5000
-tauleaping = 5000 #compléxité en N*tauleaping
+N = 2000
+tauleaping = 2000 #compléxité en N*tauleaping
 
 delta = 1e-5
 absc = np.linspace(start = 0, stop = 1, num = M)
@@ -45,7 +45,7 @@ def test():
     U0=1 + np.cos(2 * np.pi * absc)
     V0=1 + np.sin(2 * np.pi * absc)
     return U0,V0, D, R
-def test2():
+def only_diffusion():
     D=np.array([[10, 1e-8, 1e-8], 
                 [1e-8, 1e-8, 1e-8]])
     R=np.array([[1e-8, 1e-8, 1e-8], 
@@ -100,4 +100,4 @@ simul_type = test
 evol, T = simul(simul_type,N,Nprime,tauleaping,M,delta)
 
 # On anime
-Animate(evol,absc,N,Nprime,tauleaping,M,delta,simul_type,T, suivi=0, moy=False)
+Animate(evol,absc,N,Nprime,tauleaping,M,delta,simul_type,T, suivi=1, moy=False)

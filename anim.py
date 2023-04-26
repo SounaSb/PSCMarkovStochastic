@@ -117,7 +117,8 @@ def Animate(evol,absc,N,Nprime,tauleaping,M,delta,scenario,T,suivi,moy,filename=
             Uarea = ax.fill_between(absc, np.array(circular_mean(Uprime[i],M//15)), color="#f44336", alpha=0.5)
             Varea = ax.fill_between(absc, np.array(circular_mean(Vprime[i],M//15)), color="#3f51b5", alpha=0.5)    
             if suivi==1:
-                Pline.set_data(absc[Pprime[i]], np.array(circular_mean(Uprime[i],M//15)[Pprime[i]]))
+                Pline.set_data([absc[int(Pprime[i])]], [circular_mean(Uprime[i],M//15)[int(Pprime[i])]])
+    
 
         # Avec bruit
         else:
@@ -125,13 +126,12 @@ def Animate(evol,absc,N,Nprime,tauleaping,M,delta,scenario,T,suivi,moy,filename=
             #Vline.set_data(x, Vprime[i])
             Uarea = ax.fill_between(absc, Uprime[i], color="#f44336", alpha=0.5)
             Varea = ax.fill_between(absc, Vprime[i], color="#3f51b5", alpha=0.5)
-            
             if suivi==1:
-                Pline.set_data(absc[Pprime[i]], [Uprime[i][Pprime[i]]])
+                Pline.set_data([absc[int(Pprime[i])]], [Uprime[i][int(Pprime[i])]])
         
         
         time_text.set_text("Simulation at t={}s ({}%)".format(
-                str(np.round(Tprime[i]*delta, decimals=2)),
+                str(np.round(Tprime[i]*delta, decimals=4)),
                 str(int(100 * Tprime[i] / tmax)),
             ))
         
