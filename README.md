@@ -1,4 +1,4 @@
-# PSCMarkovStochastic
+# PSCStochastic
 
 Blazing-fast simulation of advanced 1D population dynamics, according to a stochastic approach.
 
