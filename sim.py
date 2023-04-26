@@ -2,18 +2,21 @@ import numpy as np
 from tqdm import tqdm
 from scipy.integrate import quad
 
+from time import time
 
-## Le code qui calcul
+
 def simul(scen,N,Nprime,tauleaping,M,delta):
     U0, V0 ,D,R = scen()
     x=np.arange(M)
     
-    R[0][0]/=float(M)
-    R[0][1]/=float(M)
-    R[0][2]/=float(M)
-    R[1][0]/=float(M)
-    R[1][1]/=float(M)
-    R[1][2]/=float(M)
+    D[0][0]*=float(M)**2
+    D[0][1]*=float(M)**2
+    D[0][2]*=float(M)**2
+    D[1][0]*=float(M)**2
+    D[1][1]*=float(M)**2
+    D[1][2]*=float(M)**2
+    
+    
         
     U0 = np.floor(Nprime*U0)/Nprime
     V0 = np.floor(Nprime*V0)/Nprime
@@ -34,7 +37,6 @@ def simul(scen,N,Nprime,tauleaping,M,delta):
     print("Lancement de la simulation")
 
     for i in tqdm(range(N)):
-    
         
         ### Paramètres de poids de chaque slot en fonction des population et du role (croisé, diff)
         ## Diffusion
@@ -46,6 +48,8 @@ def simul(scen,N,Nprime,tauleaping,M,delta):
         ## Mort
         seg_um = U*(R[0][1]*U + R[0][2]*V) 
         seg_vm = V*(R[1][1]*U + R[1][2]*V)
+        
+        
 
         ## Paramètre de chaque action possible
         par_d = seg_ud.sum() + seg_vd.sum()
@@ -91,32 +95,32 @@ def simul(scen,N,Nprime,tauleaping,M,delta):
     
         ### Position de départ de diffusion
         if not (np.sum(seg_ud)>0):
-            mem_ud = np.random.randint(M,tauleaping)
+            mem_ud = np.random.randint(M,size=tauleaping)
         else :
             mem_ud = np.random.choice(x, p=seg_ud/np.sum(seg_ud), size=tauleaping)
             
         if not (np.sum(seg_vd)>0):
-            mem_vd = np.random.randint(M,tauleaping)
+            mem_vd = np.random.randint(M,size=tauleaping)
         else :
             mem_vd = np.random.choice(x, p=seg_vd/np.sum(seg_vd), size=tauleaping)
         
         if not (np.sum(seg_un)>0):
-            mem_un = np.random.randint(M,tauleaping)
+            mem_un = np.random.randint(M,size=tauleaping)
         else :
             mem_un = np.random.choice(x, p=seg_un/np.sum(seg_un), size=tauleaping)
         
         if not (np.sum(seg_vn)>0):
-            mem_vn = np.random.randint(M,tauleaping)
+            mem_vn = np.random.randint(M,size=tauleaping)
         else :
             mem_vn = np.random.choice(x, p=seg_vn/np.sum(seg_vn), size=tauleaping)
         
         if not (np.sum(seg_um)>0):
-            mem_um = np.random.randint(M,tauleaping)
+            mem_um = np.random.randint(M,size=tauleaping)
         else :
             mem_um = np.random.choice(x, p=seg_um/np.sum(seg_um), size=tauleaping)
         
         if not (np.sum(seg_vm)>0):
-            mem_vm = np.random.randint(M,tauleaping)
+            mem_vm = np.random.randint(M,size=tauleaping)
         else :
             mem_vm = np.random.choice(x, p=seg_vm/np.sum(seg_vm), size=tauleaping)
         

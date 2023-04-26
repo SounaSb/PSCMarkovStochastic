@@ -7,10 +7,10 @@ from utils import plateau
 ## On exécute maintenant
 
 M = 200
-Nprime = 800 # grandeur caractéristique de la population
+Nprime = 1000 # grandeur caractéristique de la population
 
 N = 5000
-tauleaping = 10000 #compléxité en N*tauleaping
+tauleaping = 5000 #compléxité en N*tauleaping
 
 delta = 1e-5
 absc = np.linspace(start = 0, stop = 1, num = M)

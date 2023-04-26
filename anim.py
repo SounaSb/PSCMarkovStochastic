@@ -17,13 +17,15 @@ def Animate(evol,absc,N,Nprime,tauleaping,M,delta,scenario,T,suivi,moy,filename=
 
     U, V ,D,R= scenario()
     ymax=max(max(U),max(V))
-    Uprime = [U]
-    Vprime = [V]
-    Tprime = [T[0]]
+    Uprime = np.zeros((200,M))
+    Vprime = np.zeros((200,M))
+    Tprime = np.zeros(200)
     Utemp, Vtemp = np.copy(U), np.copy(V)
+    iteration = 0
 
-    Ptemp = [M//2]
-    Pprime = [M//2]
+    Ptemp = M//2
+    Pprime = np.zeros(200)
+    Pprime[0] = M//2
     # On reconstruit notre évolution
     print("Lancement de l'animation")
     for i in tqdm(range(N*tauleaping)):
@@ -74,22 +76,19 @@ def Animate(evol,absc,N,Nprime,tauleaping,M,delta,scenario,T,suivi,moy,filename=
         """
         
         if suivi :
-            if k == Ptemp[-1]:
+            if k == Ptemp:
                 random_pop = np.random.binomial(1,1/Nprime*Utemp[p])
-                random_pop = 1
                 if random_pop == 1 :
-                    Ptemp.append(p)
-            else :
-                Ptemp.append(Ptemp[-1])
+                    Ptemp=p
 
         # Pocessus d'acceleration
         if i % (N*tauleaping//200) == 0:
-            Uprime.append(np.copy(Utemp))
-            Vprime.append(np.copy(Vtemp))
-            Pprime.append(Ptemp[-1])
-            Tprime.append(T[i])
+            Uprime[iteration] = np.copy(Utemp)
+            Vprime[iteration] = np.copy(Vtemp)
+            Pprime[iteration] = Ptemp
+            Tprime[iteration] = T[i]
+            iteration +=1
             
-
     fig , ax = plt.subplots()
     ax.set_xlabel("Space")
     #ax.set_ylabel("Concentrations")
@@ -115,12 +114,10 @@ def Animate(evol,absc,N,Nprime,tauleaping,M,delta,scenario,T,suivi,moy,filename=
         if moy:
             #Uline.set_data(x, moving_average(Uprime[i],M//15))
             #Vline.set_data(x, moving_average(Vprime[i],M//15))
-            Uarea = ax.fill_between(absc, circular_mean(Uprime[i],M//15), color="#f44336", alpha=0.5)
-            Varea = ax.fill_between(absc, circular_mean(Vprime[i],M//15), color="#3f51b5", alpha=0.5)    
-            if suivi==0:
-                Pline.set_data(absc[Pprime[i]], [circular_mean(Uprime[i],M//17)[Pprime[i]]])
-            else:
-                Pline.set_data(absc[Pprime[i]], [circular_mean(Vprime[i],M//17)[Pprime[i]]])
+            Uarea = ax.fill_between(absc, np.array(circular_mean(Uprime[i],M//15)), color="#f44336", alpha=0.5)
+            Varea = ax.fill_between(absc, np.array(circular_mean(Vprime[i],M//15)), color="#3f51b5", alpha=0.5)    
+            if suivi==1:
+                Pline.set_data(absc[Pprime[i]], np.array(circular_mean(Uprime[i],M//15)[Pprime[i]]))
 
         # Avec bruit
         else:
