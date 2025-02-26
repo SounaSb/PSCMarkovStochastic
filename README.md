@@ -6,22 +6,26 @@ In this project, we comparearively solved the SKT model system for stationary so
 
 <br>
 
-
-## Benchmark
-
-As a benchmark, the simulation hereunder represents the population dynamics stationary and deterministic solution.
-![Population dynamics simulation](./misc/SKT.gif)
-
-
 ## Results
 
-Comparative observations:
+Comparative observations at three stages of the population dynamics, given an 'intruder' initial scenario:
 
 Deterministic | Stochastic
 --- | ---
 ![Population dynamics simulation](./misc/detbeg.png) | ![Population dynamics simulation](./misc/stobeg.png)
 ![Population dynamics simulation](./misc/detmid.png) | ![Population dynamics simulation](./misc/stolid.png)
 ![Population dynamics simulation](./misc/detend.png) | ![Population dynamics simulation](./misc/stoend.png)
+
+
+
+
+## Benchmark
+
+As a benchmark, here is a dynamic simulation of stationary and deterministic solution of the SKT model given a specific initial scenario:
+
+![Population dynamics simulation](./misc/SKT.gif)
+
+
 
 
 
