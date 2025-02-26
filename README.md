@@ -4,12 +4,15 @@ Capstone project at Ecole Polytechnique with Theo Molfessis, Samuel Boïté, Mat
 
 Stochastic simulation of advanced 1D population dynamics, based on the Sheguesada Kawazaki Teramoto (SKT) model. 
 
+
 ## Benchmark
 
 As a benchmark, we also simulated the continuous stationary solved solutions of the equation system hereunder ([[Theory (French)]](./misc/theory.pdf))
 
 ![Population dynamics simulation](./misc/SKT.gif)
 
+
+That you can obtain with quickstart code:
 
 ```python
 import numpy as np
