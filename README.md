@@ -1,5 +1,6 @@
 # PSC MArkov Stochastics
 
+Capstone project at Ecole Polytechnique with Theo Molfessis, Samuel Boïté, Mathias Grau and Paco Goze.
 Stochastic simulation of advanced 1D population dynamics, based on the Sheguesada Kawazaki Teramoto (SKT) model. [[Theory (French)]](./misc/theory.pdf)
 
 ![Population dynamics simulation](./misc/SKT.gif)
