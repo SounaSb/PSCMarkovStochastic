@@ -45,6 +45,7 @@ def test():
     U0=1 + np.cos(2 * np.pi * absc)
     V0=1 + np.sin(2 * np.pi * absc)
     return U0,V0, D, R
+
 def only_diffusion():
     D=np.array([[10, 1e-8, 1e-8], 
                 [1e-8, 1e-8, 1e-8]])

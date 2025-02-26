@@ -176,7 +176,8 @@ def simul(scen):
 
 ## Partie animation
 import matplotlib.animation as animation
-import time
+from matplotlib.animation import PillowWriter
+from matplotlib.animation import FFMpegWriter
 n=0
 
 
@@ -191,7 +192,7 @@ def circular_mean(arr, w):
 
 
 def Animate(evol,scenario,T,suivi,moy,filename='',length: float = 7): 
-    plt.style.use("seaborn-talk")
+    plt.style.use("seaborn-v0_8-talk")
     
     xmin = 0
     xmax = 1
@@ -278,9 +279,9 @@ def Animate(evol,scenario,T,suivi,moy,filename='',length: float = 7):
             Uarea = ax.fill_between(absc, circular_mean(Uprime[i],M//15), color="#f44336", alpha=0.5)
             Varea = ax.fill_between(absc, circular_mean(Vprime[i],M//15), color="#3f51b5", alpha=0.5)    
             if suivi==0:
-                Pline.set_data(absc[Pprime[i]], [circular_mean(Uprime[i],M//17)[Pprime[i]]])
+                Pline.set_data([absc[Pprime[i]]], [circular_mean(Uprime[i],M//17)[Pprime[i]]])
             else:
-                Pline.set_data(absc[Pprime[i]], [circular_mean(Vprime[i],M//17)[Pprime[i]]])
+                Pline.set_data([absc[Pprime[i]]], [circular_mean(Vprime[i],M//17)[Pprime[i]]])
 
         # Avec bruit
         else:
@@ -290,9 +291,9 @@ def Animate(evol,scenario,T,suivi,moy,filename='',length: float = 7):
             Varea = ax.fill_between(absc, Vprime[i], color="#3f51b5", alpha=0.5)
             
             if suivi==0:
-                Pline.set_data(absc[Pprime[i]], [Uprime[i][Pprime[i]]])
+                Pline.set_data([absc[Pprime[i]]], [Uprime[i][Pprime[i]]])
             else:
-                Pline.set_data(absc[Pprime[i]], [Vprime[i][Pprime[i]]])
+                Pline.set_data([absc[Pprime[i]]], [Vprime[i][Pprime[i]]])
         
         
         time_text.set_text("Population dynamics simulation at t={}s".format(
@@ -300,12 +301,19 @@ def Animate(evol,scenario,T,suivi,moy,filename='',length: float = 7):
                 ))
         return Uarea, Varea, Pline, time_text
  
-    ani = animation.FuncAnimation(fig, anim, frames= len(Uprime),interval=1, blit=True, repeat=True)
+    ani = animation.FuncAnimation(fig, anim, frames= len(Uprime),interval=1, blit=True, repeat=False)
+
     plt.show()
     
     if filename:
-        w = animation.writers['ffmpeg']
+        print(animation.writers.list())
+        print(f"Saving animation as {filename}...")
+        # w = PillowWriter(fps=30)
         w = animation.FFMpegWriter(fps=60, bitrate=1800)
+        ani.save(filename, writer=w, dpi=150)
+        print(f"Animation saved successfully as {filename}")
+
+
 
 
 
@@ -319,7 +327,7 @@ def Animate(evol,scenario,T,suivi,moy,filename='',length: float = 7):
 D=[[0.005, 0, 3], [0.005, 0, 0]]
 R=[[5, 3, 1], [2, 1, 3]]
 M = 200
-N = 2000000
+N = 3000000
 delta = 1e-5
 absc = np.linspace(start = 0, stop = 1, num = M)
 
@@ -349,5 +357,5 @@ simul_type = test
 # On calcul
 evol, T = simul(simul_type)
 # On anime
-Animate(evol, simul_type, T, suivi=0, moy=True)
+Animate(evol, simul_type, T, suivi=0, moy=True, filename='simsto.gif')
 
