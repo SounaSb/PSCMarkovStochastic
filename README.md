@@ -19,9 +19,9 @@ Comparative observations:
 
 Deterministic | Stochastic
 
-![Population dynamics simulation](./misc/detbeg.png) | ![Population dynamics simulation](./misc/stobeg.png)
-![Population dynamics simulation](./misc/detmid.png) | ![Population dynamics simulation](./misc/stolid.png)
-![Population dynamics simulation](./misc/detend.png) | ![Population dynamics simulation](./misc/stoend.png)
+![Population dynamics simulation](./misc/detbeg.png) ![Population dynamics simulation](./misc/stobeg.png)
+![Population dynamics simulation](./misc/detmid.png) ![Population dynamics simulation](./misc/stolid.png)
+![Population dynamics simulation](./misc/detend.png) ![Population dynamics simulation](./misc/stoend.png)
 
 
 
