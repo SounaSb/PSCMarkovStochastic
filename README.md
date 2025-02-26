@@ -17,17 +17,15 @@ As a benchmark, the simulation hereunder represents the population dynamics stat
 
 Comparative observations:
 
-First deterministic:
+Deterministic | Stochastic
 
-![Population dynamics simulation](./misc/detbeg.png)
-![Population dynamics simulation](./misc/detmid.png)
-![Population dynamics simulation](./misc/detend.png)
+![Population dynamics simulation](./misc/detbeg.png) | ![Population dynamics simulation](./misc/stobeg.png)
+![Population dynamics simulation](./misc/detmid.png) | ![Population dynamics simulation](./misc/stomid.png)
+![Population dynamics simulation](./misc/detend.png) | ![Population dynamics simulation](./misc/stoend.png)
 
-Then stochastic:
 
-![Population dynamics simulation](./misc/stobeg.png)
-![Population dynamics simulation](./misc/stomid.png)
-![Population dynamics simulation](./misc/stoend.png)
+
+
 
 
 
