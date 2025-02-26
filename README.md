@@ -1,16 +1,18 @@
 # PSC MArkov Stochastics
 
 Capstone project at Ecole Polytechnique with Theo Molfessis, Samuel Boïté, Mathias Grau and Paco Goze.
-Stochastic simulation of advanced 1D population dynamics, based on the Sheguesada Kawazaki Teramoto (SKT) model. [[Theory (French)]](./misc/theory.pdf)
+
+Stochastic simulation of advanced 1D population dynamics, based on the Sheguesada Kawazaki Teramoto (SKT) model. 
+
+
+## Benchmark
+
+As a benchmark, we also simulated the continuous stationary solved solutions of the equation system hereunder ([[Theory (French)]](./misc/theory.pdf))
 
 ![Population dynamics simulation](./misc/SKT.gif)
 
 
-
-## Quickstart
-
-As a benchmark, we also simulated the continuous stationary solved solutions of the equation system hereunder:
-
+That you can obtain with quickstart code:
 
 ```python
 import numpy as np
