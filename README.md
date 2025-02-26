@@ -4,6 +4,7 @@ Stochastic simulation of advanced 1D population dynamics, based on the Sheguesad
 In this project, we comparearively solved the SKT model system for stationary solutions using stochastic simulations and deterministic methods. [[Theory and Results Presetation (French)]](./misc/PSC.pdf))
 
 
+<br>
 
 
 ## Benchmark
@@ -18,15 +19,15 @@ Comparative observations:
 
 First deterministic:
 
-![Population dynamics simulation](./misc/detbeg.gif)
-![Population dynamics simulation](./misc/detmid.gif)
-![Population dynamics simulation](./misc/detend.gif)
+![Population dynamics simulation](./misc/detbeg.png)
+![Population dynamics simulation](./misc/detmid.png)
+![Population dynamics simulation](./misc/detend.png)
 
 Then stochastic:
 
-![Population dynamics simulation](./misc/stobeg.gif)
-![Population dynamics simulation](./misc/stomid.gif)
-![Population dynamics simulation](./misc/stoend.gif)
+![Population dynamics simulation](./misc/stobeg.png)
+![Population dynamics simulation](./misc/stomid.png)
+![Population dynamics simulation](./misc/stoend.png)
 
 
 
